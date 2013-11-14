@@ -66,6 +66,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="InitShader.cpp" />
+    <ClCompile Include="PolyController.cpp" />
     <ClCompile Include="Octahedron.cpp" />
     <ClCompile Include="Polyhedron.cpp" />
     <ClCompile Include="Tetrahedron.cpp" />
@@ -75,6 +76,7 @@
     <ClInclude Include="CheckError.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="mat.h" />
+    <ClInclude Include="PolyController.h" />
     <ClInclude Include="Octahedron.h" />
     <ClInclude Include="Polyhedron.h" />
     <ClInclude Include="Tetrahedron.h" />

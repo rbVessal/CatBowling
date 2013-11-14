@@ -8,6 +8,8 @@ class Cube : public Polyhedron
 public:
 	Cube(void); // Cube at origin
 	Cube(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, bool); // Cube at x,y,z; bool = iswall?
+	Cube(const Cube&);
+	const Cube& operator=(const Cube&);
 	~Cube(void);
 
 	// Functions

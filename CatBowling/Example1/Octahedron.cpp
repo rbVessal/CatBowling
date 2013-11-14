@@ -41,6 +41,19 @@ Octahedron::Octahedron(GLfloat x, GLfloat y, GLfloat z)
 	initOctahedron(x, y, z);
 }
 
+Octahedron::Octahedron(const Octahedron& other)
+{
+	doCopy(other);
+}
+
+const Octahedron& Octahedron::operator=(const Octahedron& other)
+{
+	if(&other != this)
+	{
+		doCopy(other);
+	}
+	return *this;
+}
 
 Octahedron::~Octahedron(void)
 {
@@ -48,7 +61,6 @@ Octahedron::~Octahedron(void)
 	delete points;
 	delete colors;
 }
-
 
 void Octahedron::draw()
 {

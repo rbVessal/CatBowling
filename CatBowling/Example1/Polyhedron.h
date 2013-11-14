@@ -36,11 +36,12 @@ class Polyhedron
 {
 public:
 	Polyhedron(void); // Polyhedron at origin
+	Polyhedron(const Polyhedron&);
+	const Polyhedron& operator=(const Polyhedron&);
 	~Polyhedron(void);
 
 	// Functions
 	void init(GLuint);
-	
 	void display();
 
 	AABB getAABB();
@@ -50,6 +51,8 @@ public:
 	void move(Polyhedron** polyhedronArray, int size);
 
 protected:
+	void doCopy(const Polyhedron&); // used for inherited copy constructors
+
 	GLfloat centerX, centerY, centerZ;
 	GLfloat offsetX, offsetY, offsetZ;
 	int index;

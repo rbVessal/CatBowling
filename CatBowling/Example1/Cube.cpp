@@ -54,6 +54,21 @@ void Cube::initCube(GLfloat x, GLfloat y, GLfloat z, GLfloat halfX, GLfloat half
 	}
 }
 
+Cube::Cube(const Cube& other)
+{
+	doCopy(other);
+	isWall = other.isWall;
+}
+
+const Cube& Cube::operator=(const Cube& other)
+{
+	if(&other != this)
+	{
+		doCopy(other);
+		isWall = other.isWall;
+	}
+	return *this;
+}
 
 Cube::~Cube(void)
 {

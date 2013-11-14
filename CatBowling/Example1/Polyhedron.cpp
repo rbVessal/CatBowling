@@ -8,6 +8,77 @@ Polyhedron::Polyhedron(void)
 {
 }
 
+Polyhedron::Polyhedron(const Polyhedron& other)
+{
+	doCopy(other);
+}
+
+const Polyhedron& Polyhedron::operator=(const Polyhedron& other)
+{
+	if(&other != this)
+	{
+		doCopy(other);
+	}
+
+	return *this;
+}
+
+void Polyhedron::doCopy(const Polyhedron& other)
+{
+	centerX = other.centerX;
+	centerY = other.centerY;
+	centerZ = other.centerZ;
+	offsetX = other.offsetX;
+	offsetY = other.offsetY;
+	offsetZ = other.offsetZ;
+	index = other.index;
+	NumVertices = other.NumVertices;
+	numberOfTriangles = other.numberOfTriangles;
+	model_view = other.model_view;
+	projection = other.projection;
+	transformationMatrix = other.transformationMatrix;
+	vbo = other.vbo;
+	vao = other.vao;
+	radius = other.radius;
+	theta = other.theta;
+	phi = other.phi;
+	left = other.left;
+	right = other.right;
+	bottom = other.bottom;
+	top = other.top;
+	zNear = other.zNear;
+	zFar = other.zFar;
+
+	aabb = other.aabb;
+	velocity = other.velocity;
+	acceleration = other.acceleration;
+	
+	newRandR = other.newRandR;
+	newRandG= other.newRandG;
+	newRandB = other.newRandB;
+	newRandA= other.newRandA;
+
+	switchColors = other.switchColors;
+	timerInterval = other.timerInterval;
+	previousTime = other.previousTime;
+	currentTime = other.currentTime;
+
+	newX = other.newX;
+	newY = other.newY;
+	newZ = other.newZ;
+	vColor = other.vColor;
+
+	randomNumberR = other.randomNumberR;
+	randomNumberG = other.randomNumberG;
+	randomNumberB = other.randomNumberB;
+	randomNumberA = other.randomNumberA;
+
+	for(int i=0; i<8; i++)
+	{
+		vertex_colors[i] = other.vertex_colors[i];
+	}
+}
+
 Polyhedron::~Polyhedron(void)
 {
 }

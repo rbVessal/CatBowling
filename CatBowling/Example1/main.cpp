@@ -1,28 +1,26 @@
 // Data Structures and Algorithms II
-// A5 - Geometry Wars
+// Final Project - Cat Bowling
 // Rebecca Vessal and Jennifer Stanton
 
 #include "Cube.h"
 #include "Tetrahedron.h"
 #include "Octahedron.h"
+#include "PolyController.h"
 #include <time.h>
 
-Cube* cube;
-Cube* cube2;
-Tetrahedron* tetrahedron;
-Tetrahedron* tetrahedron2;
-Octahedron* octahedron;
-Octahedron* octahedron2;
-
-//For the frustum walls
-Cube* leftWallCube;
-Cube* rightWallCube;
-Cube* topWallCube;
-Cube* bottomWallCube;
+#define MENU 0
+#define GAME 1
 
 Polyhedron** polyhedronArray;
 int sizeOfPolyhedronArray;
 
+Polyhedron** menuPolys;
+int sizeOfMenuPolys;
+
+PolyController* menu;
+PolyController* game;
+
+int screenState;
 GLuint program;
 
 //----------------------------------------------------------------------------
@@ -37,48 +35,32 @@ void init()
     glUseProgram( program );
 
 	float speed = 0.01;
+
 	//Make right cube
-	cube = new Cube();
-	cube->init(program);
-	//cube->setVelocity(speed, 0.0, 0.0);
+	Cube* cube = new Cube();
 
 	//Make left cube
-	cube2 = new Cube(-2.0, 0, 0, 0.5, 0.5, 0.5, false);
-	cube2->init(program);
+	Cube* cube2 = new Cube(-2.0, 0, 0, 0.5, 0.5, 0.5, false);
 	cube2->setVelocity(-speed, speed, 0.0);
 
 	// right
-	tetrahedron = new Tetrahedron(0, -2, -0.1);
-	tetrahedron->init(program);
+	Tetrahedron* tetrahedron = new Tetrahedron(0, -2, -0.1);
 	tetrahedron->setVelocity(0.0, speed, 0.0);
 
 	// left
-	tetrahedron2 = new Tetrahedron(-3, -2, -0.1);
-	tetrahedron2->init(program);
+	Tetrahedron* tetrahedron2 = new Tetrahedron(-3, -2, -0.1);
 	tetrahedron2->setVelocity(speed, speed, 0.0);
     
-	octahedron = new Octahedron(-1, -4.5, 0);
-	octahedron->init(program);
+	Octahedron* octahedron = new Octahedron(-1, -4.5, 0);
 	octahedron->setVelocity(speed, 0.0, 0.0);
 
-	octahedron2 = new Octahedron(-3, -4.5, 0);
-	octahedron2->init(program);
+	Octahedron* octahedron2 = new Octahedron(-3, -4.5, 0);
 	octahedron2->setVelocity(speed, speed, 0.0);
 
-	/*leftWallCube = new Cube(0, 0, 0, -0.5, 0.5, 1.75, true);
-	leftWallCube->init(program);*/
-
-	leftWallCube = new Cube(-5, 0, 0.5, 1.0, 6.0, 1.25, true);
-	leftWallCube->init(program);
-
-	rightWallCube = new Cube(2.95, 0, 0.5, 1.0, 16.0, 1.25, true);
-	rightWallCube->init(program);
-
-	topWallCube = new Cube(-1, 2.2, 0.5, 16.0, 0.25, 1.25, true);
-	topWallCube->init(program);
-
-	bottomWallCube = new Cube(-1, -3.15, 0.5, 6.0, 0.25, 1.25, true);
-	bottomWallCube->init(program);
+	Cube* leftWallCube = new Cube(-5, 0, 0.5, 1.0, 6.0, 1.25, true);
+	Cube* rightWallCube = new Cube(2.95, 0, 0.5, 1.0, 16.0, 1.25, true);
+	Cube* topWallCube = new Cube(-1, 2.2, 0.5, 16.0, 0.25, 1.25, true);
+	Cube* bottomWallCube = new Cube(-1, -3.15, 0.5, 6.0, 0.25, 1.25, true);
 
 	sizeOfPolyhedronArray = 10;
 	polyhedronArray = new Polyhedron*[sizeOfPolyhedronArray];
@@ -93,6 +75,18 @@ void init()
 	polyhedronArray[8] = topWallCube;
 	polyhedronArray[9] = bottomWallCube;
 
+	sizeOfMenuPolys = 1;
+	menuPolys = new Polyhedron*[sizeOfMenuPolys];
+	menuPolys[0] = new Cube(-1.0, 0, 0, 0.5, 0.5, 0.5, false); // testing menu
+
+	// PolyController init
+	game = new PolyController(polyhedronArray, sizeOfPolyhedronArray);
+	menu = new PolyController(menuPolys, sizeOfMenuPolys);
+
+	game->init(program);
+	menu->init(program);
+
+
     glEnable( GL_DEPTH_TEST );
 }
 
@@ -105,11 +99,14 @@ void display( void )
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glUseProgram( program );
 
-	// Render each object
-	for(int i = 0; i < sizeOfPolyhedronArray; i++)
+	// Render either the Menu polys or the Game polys
+	if(screenState==MENU)
 	{
-		Polyhedron* polyhedron = polyhedronArray[i];
-		polyhedron->display();
+		menu->display();
+	}
+	else if(screenState==GAME)
+	{
+		game->display();
 	}
 
     glutSwapBuffers();
@@ -128,6 +125,11 @@ void keyboard( unsigned char key, int x, int y )
 		case 033: // Escape Key
 		case 'q': case 'Q':
 			exit( EXIT_SUCCESS );
+			break;
+		// Switch between menu and game
+		case ' ':
+			if(screenState==MENU){screenState=GAME;}
+			else if(screenState==GAME){screenState=MENU;}
 			break;
 		//Move the 1st cube in the polyhedron array with these keyboard controls
 		case 'a': polyhedronArray[0]->setVelocity(-speed, 0.0, 0.0); break;
@@ -163,15 +165,15 @@ void idle()
 
 int main( int argc, char **argv )
 {
-	// Random seed
-	srand(time(NULL));
+	screenState = MENU;
+	srand(time(NULL)); // Random seed
 
     glutInit( &argc, argv );
     glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
     glutInitWindowSize( 512, 512 );
     glutInitContextVersion( 3, 2 );
     glutInitContextProfile( GLUT_CORE_PROFILE );
-    glutCreateWindow( "Color Cube" );
+    glutCreateWindow( "Cat Bowling" );
 	glewExperimental = GL_TRUE;
     glewInit();
 
@@ -185,18 +187,9 @@ int main( int argc, char **argv )
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION); // Let the program continue after main loop
     glutMainLoop();
 
-	delete cube;
-	delete cube2;
-	delete tetrahedron;
-	delete tetrahedron2;
-	delete octahedron;
-	delete octahedron2;
-	delete leftWallCube;
-	delete rightWallCube;
-	delete topWallCube;
-	delete bottomWallCube;
-
-	delete polyhedronArray; // Contents of array are already deleted
+	// Deleting game and menu deletes all of the polyhedrons
+	delete game;
+	delete menu;
 
     return 0;
 }

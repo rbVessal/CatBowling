@@ -7,6 +7,8 @@ class Octahedron : public Polyhedron
 public:
 	Octahedron(void);
 	Octahedron(GLfloat, GLfloat, GLfloat);
+	Octahedron(const Octahedron&);
+	const Octahedron& operator=(const Octahedron&);
 	~Octahedron(void);
 
 	// Functions

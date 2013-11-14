@@ -7,6 +7,8 @@ class Tetrahedron : public Polyhedron
 public:
 	Tetrahedron(void);
 	Tetrahedron(GLfloat, GLfloat, GLfloat);
+	Tetrahedron(const Tetrahedron&);
+	const Tetrahedron& operator=(const Tetrahedron&);
 	~Tetrahedron(void);
 
 	// Functions

@@ -39,6 +39,19 @@ Tetrahedron::Tetrahedron(GLfloat x, GLfloat y, GLfloat z)
 	initTetrahedron(x, y, z);
 }
 
+Tetrahedron::Tetrahedron(const Tetrahedron& other)
+{
+	doCopy(other);
+}
+
+const Tetrahedron& Tetrahedron::operator=(const Tetrahedron& other)
+{
+	if(&other != this)
+	{
+		doCopy(other);
+	}
+	return *this;
+}
 
 Tetrahedron::~Tetrahedron(void)
 {
@@ -46,7 +59,6 @@ Tetrahedron::~Tetrahedron(void)
 	delete points;
 	delete colors;
 }
-
 
 // generate 12 triangles: 36 vertices and 36 colors
 void Tetrahedron::draw()
