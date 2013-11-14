@@ -43,14 +43,6 @@ public:
 	
 	void display();
 
-	//All for keyboard
-	void doX(float n){ left *= n; right *= n; }
-	void doY(float n){ bottom *= n; top *= n; }
-	void doZ(float n){ zNear  *= n; zFar *= n; }
-	void doR(float n){ radius *= n; }
-	void doO(float n){ theta += n; }
-	void doP(float n){ phi += n; }
-	void doReset();
 	AABB getAABB();
 	void setVelocity(float x, float y, float z);
 	vec3 getVelocity();
@@ -65,6 +57,7 @@ protected:
 	int numberOfTriangles;
 	GLuint model_view;
 	GLuint projection;
+	GLuint transformationMatrix;
 	GLuint vbo;
 	GLuint vao;
 
@@ -104,6 +97,7 @@ protected:
 	void setupVBO();
 	void setupVAO(GLuint);
 
+	//Use this if you want specific colors changed for a specific polyhedron
 	virtual void changeColors();
 	
 	void initValues();
@@ -112,6 +106,8 @@ private:
 	GLfloat newX, newY, newZ;
 	GLfloat randomNumberR, randomNumberG, randomNumberB, randomNumberA;
 	GLuint vColor;
+	//Use this if you want all of the polyhedron faces changing colors
+	void animateColorsOfFaces();
 
 };
 #endif

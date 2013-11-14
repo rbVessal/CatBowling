@@ -16,7 +16,8 @@ Polyhedron::~Polyhedron(void)
 void Polyhedron::initValues()
 {
 	index = 0;
-	// RGBA colors
+
+	//RGBA colors
 	vertex_colors[0] = color4( 0.0, 0.0, 0.0, 1.0 );  // black
     vertex_colors[1] = color4( 1.0, 0.0, 0.0, 1.0 );  // red
     vertex_colors[2] = color4( 1.0, 1.0, 0.0, 1.0 );  // yellow
@@ -74,6 +75,8 @@ void Polyhedron::setupVAO(GLuint program)
 
     model_view = glGetUniformLocation( program, "model_view" );
     projection = glGetUniformLocation( program, "projection" );
+	//transformationMatrix = glGetUniformLocation(program, "transformationMatrix");
+	
 }
 
 void Polyhedron::setupVBO()
@@ -152,7 +155,7 @@ void Polyhedron::changeColors()
 	
 }
 
-void Polyhedron::display( void )
+void Polyhedron::animateColorsOfFaces()
 {
 	//Animate the colors of the polyhedron
 	//Get the current time
@@ -170,6 +173,12 @@ void Polyhedron::display( void )
 			colors[i] = color4(newRandR, newRandG, newRandB, newRandA);
 		}
 	}
+}
+
+void Polyhedron::display( void )
+{
+	//Change the colors of the polyhedron faces
+	animateColorsOfFaces();
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
 	glBufferSubData( GL_ARRAY_BUFFER, NumVertices * sizeof(point4), NumVertices * sizeof(color4), colors );
 
@@ -178,13 +187,21 @@ void Polyhedron::display( void )
 	
 	glBindVertexArray( vao );
 
-	glUniform4fv(vColor, NumVertices, (GLfloat*)colors);
+	//Possibly use for clearing matrices
+	//glLoadIdentity();
+
 	glUniform1f(newX, offsetX);
 	glUniform1f(newY, offsetY);
 	glUniform1f(newZ, offsetZ);
 
-	
+	//TODO:Finish this
+	//Define the model matrix using transformations
+	//Transformations - Scaling, Rotating, Translation, Skewing
+	//mat4 scalingMatrix = Scale(1.0, 1.0, 1.0);
+	//glUniformMatrix4fv( transformationMatrix, 1, GL_TRUE, scalingMatrix );
 
+
+	//Define the view matrix as the eye coordinates
 	point4  eye( radius*sin(theta)*cos(phi),
 		 radius*sin(theta)*sin(phi),
 		 radius*cos(theta),
@@ -193,15 +210,13 @@ void Polyhedron::display( void )
     vec4    up( 0.0, 1.0, 0.0, 0.0 );
 
     mat4  mv = LookAt( eye, at, up );
-    glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+	//mat4 modelViewMatrix = matrixCompMult(scalingMatrix, mv);
+	glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
 
+	//Define the prespective projection matrix
     mat4  p = Frustum( left, right, bottom, top, zNear, zFar );
     glUniformMatrix4fv( projection, 1, GL_TRUE, p );
 
+	//Draw those beautiful polyhedrons using GL_TRIANGLES
 	glDrawArrays( GL_TRIANGLES, 0, NumVertices );
-}
-
-void Polyhedron::doReset()
-{
-	initValues();
 }
