@@ -44,17 +44,17 @@ void init()
 	cube2->setVelocity(-speed, speed, 0.0);
 
 	// right
-	Tetrahedron* tetrahedron = new Tetrahedron(0, -2, -0.1);
+	Tetrahedron* tetrahedron = new Tetrahedron(0, -2.5, -0.1);
 	tetrahedron->setVelocity(0.0, speed, 0.0);
 
 	// left
-	Tetrahedron* tetrahedron2 = new Tetrahedron(-3, -2, -0.1);
+	Tetrahedron* tetrahedron2 = new Tetrahedron(-3.2, -2, -0.1);
 	tetrahedron2->setVelocity(speed, speed, 0.0);
     
-	Octahedron* octahedron = new Octahedron(-1, -4.5, 0);
+	Octahedron* octahedron = new Octahedron(-1, -3, 0);
 	octahedron->setVelocity(speed, 0.0, 0.0);
 
-	Octahedron* octahedron2 = new Octahedron(-3, -4.5, 0);
+	Octahedron* octahedron2 = new Octahedron(-2.1, -3, 0);
 	octahedron2->setVelocity(speed, speed, 0.0);
 
 	Cube* leftWallCube = new Cube(-5, 0, 0.5, 1.0, 6.0, 1.25, true);
@@ -160,12 +160,18 @@ void idle()
 		polyhedron->move(polyhedronArray, sizeOfPolyhedronArray);
 	}
 
+	//Polyhedron** otherArray = &polyhedronArray[0];
+	//polyhedronArray[2]->move(otherArray, 1);
+
+	//polyhedronArray[0]->move(polyhedronArray, sizeOfPolyhedronArray);
+	//polyhedronArray[1]->move(polyhedronArray, sizeOfPolyhedronArray);
+
 	glutPostRedisplay();
 }
 
 int main( int argc, char **argv )
 {
-	screenState = MENU;
+	screenState = GAME; //MENU;
 	srand(time(NULL)); // Random seed
 
     glutInit( &argc, argv );
