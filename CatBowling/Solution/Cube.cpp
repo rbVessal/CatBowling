@@ -22,23 +22,23 @@ void Cube::initCube(GLfloat x, GLfloat y, GLfloat z, GLfloat halfX, GLfloat half
 	offsetZ = 0;
 	NumVertices = 36;
 	numberOfTriangles = NumVertices/3;
-	vertices = new point4[8];
-	points = new point4[NumVertices];
-	colors = new point4[NumVertices];
+	vertices = new glm::vec4[8];
+	points = new glm::vec4[NumVertices];
+	colors = new glm::vec4[NumVertices];
 
 	float halfWidthExtentX = halfX;
 	float halfWidthExtentY = halfY;
 	float halfWidthExtentZ = halfZ;
 
 	// Vertices of a unit cube centered at origin, sides aligned with axes
-	vertices[0] = point4( -halfWidthExtentX+x, -halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
-	vertices[1] = point4( -halfWidthExtentX+x,  halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
-	vertices[2] = point4(  halfWidthExtentX+x,  halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
-	vertices[3] = point4(  halfWidthExtentX+x, -halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
-	vertices[4] = point4( -halfWidthExtentX+x, -halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
-	vertices[5] = point4( -halfWidthExtentX+x,  halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
-	vertices[6] = point4(  halfWidthExtentX+x,  halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
-	vertices[7] = point4(  halfWidthExtentX+x, -halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
+	vertices[0] = glm::vec4( -halfWidthExtentX+x, -halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
+	vertices[1] = glm::vec4( -halfWidthExtentX+x,  halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
+	vertices[2] = glm::vec4(  halfWidthExtentX+x,  halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
+	vertices[3] = glm::vec4(  halfWidthExtentX+x, -halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
+	vertices[4] = glm::vec4( -halfWidthExtentX+x, -halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
+	vertices[5] = glm::vec4( -halfWidthExtentX+x,  halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
+	vertices[6] = glm::vec4(  halfWidthExtentX+x,  halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
+	vertices[7] = glm::vec4(  halfWidthExtentX+x, -halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
 
 	aabb.centerPoint = vec3(x, y, z);
 	aabb.halfWidthExtents[0] = halfWidthExtentX;

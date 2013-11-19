@@ -133,7 +133,7 @@ void Polyhedron::setupVAO(GLuint program)
 
     vColor = glGetAttribLocation( program, "vColor" ); 
     glEnableVertexAttribArray( vColor );
-    glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(NumVertices * sizeof(point4)) );
+    glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(NumVertices * sizeof(glm::vec4)) );
 
 	newX = glGetUniformLocation(program, "newX");
 	newY = glGetUniformLocation(program, "newY");
@@ -146,7 +146,7 @@ void Polyhedron::setupVAO(GLuint program)
 
     model_view = glGetUniformLocation( program, "model_view" );
     projection = glGetUniformLocation( program, "projection" );
-	//transformationMatrix = glGetUniformLocation(program, "transformationMatrix");
+	transformationMatrix = glGetUniformLocation(program, "transformationMatrix");
 	
 }
 
@@ -155,9 +155,9 @@ void Polyhedron::setupVBO()
 	// Initialize the buffer object
     glGenBuffers( 1, &vbo );
     glBindBuffer( GL_ARRAY_BUFFER, vbo );
-	glBufferData( GL_ARRAY_BUFFER, NumVertices * sizeof(point4) + NumVertices * sizeof(color4), NULL, GL_STATIC_DRAW );
-    glBufferSubData( GL_ARRAY_BUFFER, 0, NumVertices * sizeof(point4), points );
-    glBufferSubData( GL_ARRAY_BUFFER, NumVertices * sizeof(point4), NumVertices * sizeof(color4), colors );
+	glBufferData( GL_ARRAY_BUFFER, NumVertices * sizeof(glm::vec4) + NumVertices * sizeof(color4), NULL, GL_STATIC_DRAW );
+    glBufferSubData( GL_ARRAY_BUFFER, 0, NumVertices * sizeof(glm::vec4), points );
+    glBufferSubData( GL_ARRAY_BUFFER, NumVertices * sizeof(glm::vec4), NumVertices * sizeof(color4), colors );
 }
 
 //Getter for AABB
@@ -176,7 +176,6 @@ void Polyhedron::setVelocity(float x, float y, float z)
 	velocity = vec3(x, y, z);
 }
 
-// generate 12 triangles: 36 vertices and 36 colors
 void Polyhedron::draw()
 {
    
@@ -251,7 +250,7 @@ void Polyhedron::display( void )
 	//Change the colors of the polyhedron faces
 	animateColorsOfFaces();
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
-	glBufferSubData( GL_ARRAY_BUFFER, NumVertices * sizeof(point4), NumVertices * sizeof(color4), colors );
+	glBufferSubData( GL_ARRAY_BUFFER, NumVertices * sizeof(glm::vec4), NumVertices * sizeof(glm::vec4), colors );
 
 	// Bind the vao and vbo for multiple objects on screen
 	//see:  http://t-machine.org/index.php/2013/10/18/ios-open-gl-es-2-multiple-objects-at-once/
@@ -265,28 +264,38 @@ void Polyhedron::display( void )
 	glUniform1f(newY, offsetY);
 	glUniform1f(newZ, offsetZ);
 
-	//TODO:Finish this
 	//Define the model matrix using transformations
 	//Transformations - Scaling, Rotating, Translation, Skewing
-	//mat4 scalingMatrix = Scale(1.0, 1.0, 1.0);
-	//glUniformMatrix4fv( transformationMatrix, 1, GL_TRUE, scalingMatrix );
+	mat4 scalingMatrix = Scale(2.0, 2.0, 1.0);
+	glUniformMatrix4fv( transformationMatrix, 1, GL_TRUE, scalingMatrix );
 
 
 	//Define the view matrix as the eye coordinates
-	point4  eye( radius*sin(theta)*cos(phi),
+	vec4  eye( radius*sin(theta)*cos(phi),
 		 radius*sin(theta)*sin(phi),
-		 radius*cos(theta),
-		 1.0 );
-    point4  at( 0.0, 0.0, 0.0, 1.0 );
-    vec4    up( 0.0, 1.0, 0.0, 0.0 );
+		 radius*cos(theta), 
+		 1.0f);
+    vec4  at( 0.0f, 0.0f, 0.0f, 1.0f);
+    vec4    up( 0.0f, 1.0f, 0.0f, 0.0f);
+	/*glm::vec3  eye( radius*sin(theta)*cos(phi),
+		 radius*sin(theta)*sin(phi),
+		 radius*cos(theta));*/
+	/*glm::vec3 eye(0.0f, 0.1f, 1.0f);
+    glm::vec3  at( 0.0f, 0.1f, 0.0f);
+    glm::vec3    up( 0.0f, 1.0f, 0.0f);*/
 
-    mat4  mv = LookAt( eye, at, up );
+	mat4 mv = LookAt(eye, at, up);
+	glUniformMatrix4fv( model_view, 1, GL_TRUE, mv);
 	//mat4 modelViewMatrix = matrixCompMult(scalingMatrix, mv);
-	glUniformMatrix4fv( model_view, 1, GL_TRUE, mv );
+	//glm::mat4 mv = glm::lookAt(eye, at, up);
+	//glUniformMatrix4fv( model_view, 1, GL_TRUE, glm::value_ptr(mv));*/
 
 	//Define the prespective projection matrix
-    mat4  p = Frustum( left, right, bottom, top, zNear, zFar );
-    glUniformMatrix4fv( projection, 1, GL_TRUE, p );
+    mat4  perspectiveProjection = Frustum( left, right, bottom, top, zNear, zFar );
+	glUniformMatrix4fv( projection, 1, GL_TRUE, perspectiveProjection);
+	//glm::mat4 perspectiveProjection = glm::perspective(45.0f, 1.0f, 0.1f, 500.0f);
+	//glUniformMatrix4fv( projection, 1, GL_TRUE, glm::value_ptr(perspectiveProjection) );
+	
 
 	//Draw those beautiful polyhedrons using GL_TRIANGLES
 	glDrawArrays( GL_TRIANGLES, 0, NumVertices );

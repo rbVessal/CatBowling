@@ -21,7 +21,7 @@ vec4 tempPosition;
 void main() 
 {
 	vec4 offset = vec4(newX, newY, newZ, 0.0);
-    gl_Position = projection * model_view * ((vPosition + offset));
+    gl_Position = projection * model_view * transformationMatrix * ((vPosition + offset));
 	gl_Position /= vPosition.w;
 	fColor = vColor;
 } 

@@ -3,10 +3,13 @@
 
 #include "Angel.h"
 #include <cstdlib>
-#include "glm\glm.hpp"
+//see: http://www.g-truc.net/project-0016.html
+#include "glm\glm.hpp" //for vectors and matrices
+#include "glm\gtc\matrix_transform.hpp" //for both model and view transformations
+#include "glm\gtc\type_ptr.hpp"  //for using value_ptr to get an array of floats to pass in to shader
 
-typedef Angel::vec4  color4;
-typedef Angel::vec4  point4;
+typedef glm::vec4  color4;
+//typedef glm::vec4  point4;
 
 struct AABB
 {
@@ -73,11 +76,11 @@ protected:
 	GLfloat  bottom, top;
 	GLfloat  zNear, zFar;
 
-	point4* points;
+	glm::vec4* points;
 	color4* colors;
 
 	// Vertices of a unit cube centered at origin, sides aligned with axes
-	point4* vertices;
+	glm::vec4* vertices;
 
 
 	// RGBA colors

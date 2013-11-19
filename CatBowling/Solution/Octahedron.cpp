@@ -16,17 +16,17 @@ void Octahedron::initOctahedron(GLfloat x, GLfloat y, GLfloat z)
 	offsetZ = 0;
 	NumVertices = 24;
 	numberOfTriangles = NumVertices/3;
-	vertices = new point4[6];
-	points = new point4[NumVertices];
-	colors = new point4[NumVertices];
+	vertices = new glm::vec4[6];
+	points = new glm::vec4[NumVertices];
+	colors = new glm::vec4[NumVertices];
 
 	// Vertices of a unit Octahedron centered at origin, sides aligned with axes
-	vertices[0] = point4(  0.0 + x,  0.5 + y,  0.0 + z, 1.0 );//top
-	vertices[1] = point4( -0.5 + x, 0.0 + y,  0.0 + z, 1.0 );//left
-    vertices[2] = point4( 0.0 + x,  0.0 + y,  0.5 + z, 1.0);//front
-	vertices[3] = point4( 0.5 + x, 0.0 + y, 0.0 + z, 1.0);//right
-    vertices[4] = point4(  0.0 + x, 0.0 + y,  -0.5 + z, 1.0 );//back
-	vertices[5] = point4(0.0 + x, -0.5 + y, 0.0 + z, 1.0);//bottom
+	vertices[0] = glm::vec4(  0.0 + x,  0.5 + y,  0.0 + z, 1.0 );//top
+	vertices[1] = glm::vec4( -0.5 + x, 0.0 + y,  0.0 + z, 1.0 );//left
+    vertices[2] = glm::vec4( 0.0 + x,  0.0 + y,  0.5 + z, 1.0);//front
+	vertices[3] = glm::vec4( 0.5 + x, 0.0 + y, 0.0 + z, 1.0);//right
+    vertices[4] = glm::vec4(  0.0 + x, 0.0 + y,  -0.5 + z, 1.0 );//back
+	vertices[5] = glm::vec4(0.0 + x, -0.5 + y, 0.0 + z, 1.0);//bottom
 	
 	aabb.centerPoint = vec3(x, y, z);
 	aabb.halfWidthExtents[0] = 0.5;
