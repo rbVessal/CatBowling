@@ -9,5 +9,7 @@ uniform float randomNumberA;
 
 void main()
 {
+	//vec4 fColor = vec4(randomNumberR, randomNumberG, randomNumberB, randomNumberA);
+
     gl_FragColor = fColor;
 }

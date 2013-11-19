@@ -203,14 +203,25 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 		if(this != other)
 		{
 			//Check to see if the polyhedrons collided using AABB
-			bool isCollided = aabb.checkAABB(other->getAABB());
+			/*bool isCollided = aabb.checkAABB(other->getAABB());
 			//If collided then set the velocity to its inverse
 			if(isCollided)
 			{
 				this->setVelocity(-1 * (this->getVelocity().x), -1 * (this->getVelocity().y),  -1 * (this->getVelocity().z));
 				acceleration.x *= -1;
 				acceleration.y *= -1;
-			}
+			}*/
+
+			vec3 newVelocity = aabb.collisionResponseVector(other->getAABB(), getVelocity());
+
+			if(newVelocity.x != velocity.x)
+				acceleration.x *= -1;
+			if(newVelocity.y != velocity.y)
+				acceleration.y *= -1;
+			if(newVelocity.z != velocity.z)
+				acceleration.z *= -1;
+
+			this->setVelocity(newVelocity.x, newVelocity.y, newVelocity.z);
 		}
 	}
 	//Update the position using euler integration
