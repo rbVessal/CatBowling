@@ -207,6 +207,8 @@ protected:
 
 	//Use this if you want specific colors changed for a specific polyhedron
 	virtual void changeColors();
+
+	glm::mat4 setScaleModelTransformation(float x, float y, float z);
 	
 	void initValues();
 

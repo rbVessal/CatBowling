@@ -251,6 +251,14 @@ void Polyhedron::animateColorsOfFaces()
 	}
 }
 
+glm::mat4 Polyhedron::setScaleModelTransformation(float x, float y, float z)
+{
+	//Pass in indentity matrix and the 3D coordinates passed in to glm scale
+	//to return back a scale model transformation
+	//see: http://stackoverflow.com/questions/12838375/model-matrix-in-glm
+	return glm::scale(glm::mat4(1.0f), glm::vec3(x, y, z));
+}
+
 void Polyhedron::display( void )
 {
 	//Change the colors of the polyhedron faces
@@ -272,8 +280,8 @@ void Polyhedron::display( void )
 
 	//Define the model matrix using transformations
 	//Transformations - Scaling, Rotating, Translation, Skewing
-	mat4 scalingMatrix = Scale(2.0, 2.0, 1.0);
-	glUniformMatrix4fv( transformationMatrix, 1, GL_TRUE, scalingMatrix );
+	glm::mat4 scalingMatrix = setScaleModelTransformation(1.0f, 1.0f, 1.0f);
+	glUniformMatrix4fv( transformationMatrix, 1, GL_TRUE, glm::value_ptr(scalingMatrix));
 
 
 	//Define the view matrix as the eye coordinates
