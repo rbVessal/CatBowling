@@ -8,18 +8,13 @@ in  vec4 vColor;
 //see: http://stackoverflow.com/questions/15450996/opengl-shader-dont-interpolate-color
 flat out vec4 fColor;
 
-uniform float newX;
-uniform float newY;
-uniform float newZ;
-
-uniform mat4 model_view;
-uniform mat4 projection;
-uniform mat4 transformationMatrix;
+uniform mat4 viewMatrix;//View transformation
+uniform mat4 projection;//Perspective projection - it's actually a frustum now.
+uniform mat4 transformationMatrix;//Model transformation
 
 void main() 
 {
-	vec4 offset = vec4(newX, newY, newZ, 0.0);
-    gl_Position =  projection * model_view * transformationMatrix * (vPosition + offset);
+    gl_Position =  projection * viewMatrix * transformationMatrix * vPosition;
 	gl_Position /= vPosition.w;
 	fColor = vColor;
 } 

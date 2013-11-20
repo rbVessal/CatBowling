@@ -163,7 +163,7 @@ protected:
 	int index;
 	int NumVertices;
 	int numberOfTriangles;
-	GLuint model_view;
+	GLuint view;
 	GLuint projection;
 	GLuint transformationMatrix;
 	GLuint vbo;
@@ -208,12 +208,14 @@ protected:
 	//Use this if you want specific colors changed for a specific polyhedron
 	virtual void changeColors();
 
+	//Model transformations
 	glm::mat4 setScaleModelTransformation(float x, float y, float z);
+	glm::mat4 setTranslationModelTransformation(float x, float y, float z);
+	glm::mat4 setRotationModelTransformation(float angle, float x, float y, float z);
 	
 	void initValues();
 
 private:
-	GLfloat newX, newY, newZ;
 	GLfloat randomNumberR, randomNumberG, randomNumberB, randomNumberA;
 	GLuint vColor;
 	//Use this if you want all of the polyhedron faces changing colors

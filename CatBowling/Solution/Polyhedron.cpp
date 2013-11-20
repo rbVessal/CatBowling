@@ -34,7 +34,7 @@ void Polyhedron::doCopy(const Polyhedron& other)
 	index = other.index;
 	NumVertices = other.NumVertices;
 	numberOfTriangles = other.numberOfTriangles;
-	model_view = other.model_view;
+	view = other.view;
 	projection = other.projection;
 	transformationMatrix = other.transformationMatrix;
 	vbo = other.vbo;
@@ -63,9 +63,6 @@ void Polyhedron::doCopy(const Polyhedron& other)
 	previousTime = other.previousTime;
 	currentTime = other.currentTime;
 
-	newX = other.newX;
-	newY = other.newY;
-	newZ = other.newZ;
 	vColor = other.vColor;
 
 	randomNumberR = other.randomNumberR;
@@ -135,11 +132,7 @@ void Polyhedron::setupVAO(GLuint program)
     glEnableVertexAttribArray( vColor );
     glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(NumVertices * sizeof(glm::vec4)) );
 
-	newX = glGetUniformLocation(program, "newX");
-	newY = glGetUniformLocation(program, "newY");
-	newZ = glGetUniformLocation(program, "newZ");
-
-    model_view = glGetUniformLocation( program, "model_view" );
+    view = glGetUniformLocation( program, "viewMatrix" );
     projection = glGetUniformLocation( program, "projection" );
 	transformationMatrix = glGetUniformLocation(program, "transformationMatrix");
 	
@@ -181,7 +174,7 @@ void Polyhedron::drawTriangles(int indice0, int indice1, int indice2, int)
 	
 }
 
-//Update the position based osn euler integration
+//Update the position based on euler integration
 //see: http://physics2d.com/content/euler-integration
 void Polyhedron::eulerIntegrationUpdatePosition()
 {
@@ -251,12 +244,29 @@ void Polyhedron::animateColorsOfFaces()
 	}
 }
 
+//Scale Model Transformation
 glm::mat4 Polyhedron::setScaleModelTransformation(float x, float y, float z)
 {
 	//Pass in indentity matrix and the 3D coordinates passed in to glm scale
 	//to return back a scale model transformation
 	//see: http://stackoverflow.com/questions/12838375/model-matrix-in-glm
 	return glm::scale(glm::mat4(1.0f), glm::vec3(x, y, z));
+}
+
+//Translation Model Transformation
+glm::mat4 Polyhedron::setTranslationModelTransformation(float x, float y, float z)
+{
+	return glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
+}
+
+//Rotation Model Transformation
+glm::mat4 Polyhedron::setRotationModelTransformation(float angle, float x, float y, float z)
+{
+	//Note: Angle should be expressed in radians if GLM_FORCE_RADIANS is defined
+	//otherwise use degrees
+	//x, y, and z should be normalized coordinates as each of them represents
+	//the axis
+	return glm::rotate(glm::mat4(1.0f), angle, glm::vec3(x, y, z));
 }
 
 void Polyhedron::display( void )
@@ -274,15 +284,11 @@ void Polyhedron::display( void )
 	//Possibly use for clearing matrices
 	//glLoadIdentity();
 
-	glUniform1f(newX, offsetX);
-	glUniform1f(newY, offsetY);
-	glUniform1f(newZ, offsetZ);
-
 	//Define the model matrix using transformations
 	//Transformations - Scaling, Rotating, Translation, Skewing
-	glm::mat4 scalingMatrix = setScaleModelTransformation(1.0f, 1.0f, 1.0f);
-	glUniformMatrix4fv( transformationMatrix, 1, GL_TRUE, glm::value_ptr(scalingMatrix));
-
+	//glm::mat4 scalingMatrix = setScaleModelTransformation(1.0f, 1.0f, 1.0f);
+	glm::mat4 translationMatrix = setTranslationModelTransformation(offsetX, offsetY, offsetZ);
+	glUniformMatrix4fv( transformationMatrix, 1, GL_FALSE, glm::value_ptr(translationMatrix));
 
 	//Define the view matrix as the eye coordinates
 	vec4  eye( radius*sin(theta)*cos(phi),
@@ -299,7 +305,7 @@ void Polyhedron::display( void )
     glm::vec3    up( 0.0f, 1.0f, 0.0f);*/
 
 	mat4 mv = LookAt(eye, at, up);
-	glUniformMatrix4fv( model_view, 1, GL_TRUE, mv);
+	glUniformMatrix4fv( view, 1, GL_TRUE, mv);
 	//mat4 modelViewMatrix = matrixCompMult(scalingMatrix, mv);
 	//glm::mat4 mv = glm::lookAt(eye, at, up);
 	//glUniformMatrix4fv( model_view, 1, GL_TRUE, glm::value_ptr(mv));*/
