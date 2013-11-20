@@ -139,11 +139,6 @@ void Polyhedron::setupVAO(GLuint program)
 	newY = glGetUniformLocation(program, "newY");
 	newZ = glGetUniformLocation(program, "newZ");
 
-	randomNumberR = glGetUniformLocation(program, "randomNumberR");
-	randomNumberG = glGetUniformLocation(program, "randomNumberG");
-	randomNumberB = glGetUniformLocation(program, "randomNumberB");
-	randomNumberA = glGetUniformLocation(program, "randomNumberA");
-
     model_view = glGetUniformLocation( program, "model_view" );
     projection = glGetUniformLocation( program, "projection" );
 	transformationMatrix = glGetUniformLocation(program, "transformationMatrix");
