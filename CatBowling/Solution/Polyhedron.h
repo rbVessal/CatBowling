@@ -7,6 +7,7 @@
 #include "glm\glm.hpp" //for vectors and matrices
 #include "glm\gtc\matrix_transform.hpp" //for both model and view transformations
 #include "glm\gtc\type_ptr.hpp"  //for using value_ptr to get an array of floats to pass in to shader
+#include "glm\gtx\transform2.hpp" //for shearing see: http://glm.g-truc.net/0.9.0/api/a00193.html
 
 typedef glm::vec4  color4;
 //typedef glm::vec4  point4;
@@ -212,7 +213,7 @@ protected:
 	virtual void changeColors();
 
 	//For clearing out the composite model transformation matrix after it has been applied to the shader
-	void emptyCompositeModelTransformationMatrix();
+	void clearCompositeModelTransformationMatrix();
 	
 	void initValues();
 
