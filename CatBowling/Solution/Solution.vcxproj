@@ -43,9 +43,9 @@
     <OutDir>$(SolutionDir)Z_DELETE\</OutDir>
     <IntDir>$(SolutionDir)Z_DELETE\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_d</TargetName>
-    <ExecutablePath>$(SolutionDir)include\GL\x86\bin;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(SolutionDir)include\GL\x86\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)include\GL\x86\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(SolutionDir)include\Visual Leak Detector\bin;$(SolutionDir)include\GL\x86\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)include\Visual Leak Detector\include;$(SolutionDir)include\GL\x86\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)include\GL\x86\lib;$(SolutionDir)include\Visual Leak Detector\lib\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Z_DELETE\</OutDir>
@@ -67,6 +67,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>mkdir “$(SolutionDir)_Binary\”

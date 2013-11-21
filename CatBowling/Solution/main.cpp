@@ -7,6 +7,7 @@
 #include "Octahedron.h"
 #include "PolyController.h"
 #include <time.h>
+#include "vld.h"
 
 #define MENU 0
 #define GAME 1

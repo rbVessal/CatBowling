@@ -1,0 +1,38 @@
+﻿Build started 11/20/2013 7:29:46 PM.
+     1>Project "\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Solution\Solution.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP_d.exe" /INCREMENTAL /NOLOGO glew32.lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP_d.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP_d.lib" /MACHINE:X86 \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP\Debug\ICON.res
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP\Debug\Cube.obj
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP\Debug\InitShader.obj
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP\Debug\main.obj
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP\Debug\Octahedron.obj
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP\Debug\PolyController.obj
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP\Debug\Polyhedron.obj
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP\Debug\Tetrahedron.obj
+         Solution.vcxproj -> \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP_d.exe
+       PostBuildEvent:
+         mkdir “\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\_Binary\”
+         mkdir “\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\_Binary\Shaders\”
+         copy “\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Z_DELETE\SolutionCPP_d.exe” “\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\_Binary”
+         xcopy "\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\include\GL\x86\bin" "\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\_Binary" /y
+         xcopy "\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Solution\Shaders" "\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\_Binary\Shaders" /y
+         :VCEnd
+         A subdirectory or file \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\_Binary\ already exists.
+         A subdirectory or file \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\_Binary\Shaders\ already exists.
+                 1 file(s) copied.
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\include\GL\x86\bin\GLFW.dll
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\include\GL\x86\bin\freeglut.dll
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\include\GL\x86\bin\glew32.dll
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\include\GL\x86\bin\glew32mx.dll
+         4 File(s) copied
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Solution\Shaders\Basic.fs
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Solution\Shaders\Basic.vs
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Solution\Shaders\Basic2.vs
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Solution\Shaders\fshader.glsl
+         \\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Solution\Shaders\vshader.glsl
+         5 File(s) copied
+     1>Done Building Project "\\banner.main.ad.rit.edu\students\jas2715\IGMProfile\Desktop\GitHub\CatBowling\CatBowling\Solution\Solution.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.51
