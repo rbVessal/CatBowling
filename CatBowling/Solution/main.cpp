@@ -7,6 +7,7 @@
 #include "Octahedron.h"
 #include "PolyController.h"
 #include <time.h>
+#include "vld.h"
 
 #define MENU 0
 #define GAME 1
@@ -78,14 +79,14 @@ void init()
 	sizeOfMenuPolys = 1;
 	menuPolys = new Polyhedron*[sizeOfMenuPolys];
 	menuPolys[0] = new Cube(-1.0, 0, 0, 0.5, 0.5, 0.5, false); // testing menu
-
+	
 	// PolyController init
 	game = new PolyController(polyhedronArray, sizeOfPolyhedronArray);
 	menu = new PolyController(menuPolys, sizeOfMenuPolys);
 
 	game->init(program);
 	menu->init(program);
-
+	
 
     glEnable( GL_DEPTH_TEST );
 }
@@ -160,11 +161,11 @@ void idle()
 		polyhedron->move(polyhedronArray, sizeOfPolyhedronArray);
 	}
 
-	//Polyhedron** otherArray = &polyhedronArray[0];
-	//polyhedronArray[2]->move(otherArray, 1);
+	Polyhedron** otherArray = &polyhedronArray[0];
+	polyhedronArray[2]->move(otherArray, 1);
 
-	//polyhedronArray[0]->move(polyhedronArray, sizeOfPolyhedronArray);
-	//polyhedronArray[1]->move(polyhedronArray, sizeOfPolyhedronArray);
+	polyhedronArray[0]->move(polyhedronArray, sizeOfPolyhedronArray);
+	polyhedronArray[1]->move(polyhedronArray, sizeOfPolyhedronArray);
 
 	glutPostRedisplay();
 }

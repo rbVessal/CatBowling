@@ -143,7 +143,7 @@ public:
 	Polyhedron(void); // Polyhedron at origin
 	Polyhedron(const Polyhedron&);
 	const Polyhedron& operator=(const Polyhedron&);
-	~Polyhedron(void);
+	virtual ~Polyhedron(void);
 
 	// Functions
 	void init(GLuint);
