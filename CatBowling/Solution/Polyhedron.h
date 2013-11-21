@@ -198,6 +198,9 @@ protected:
 	int timerInterval;
 	int previousTime;
 	int currentTime;
+
+	//Composite Model Transformation Matrix
+	glm::mat4 compositeModelTransformationMatrix;
 	
 	virtual void drawTriangles(int indice0, int indice1, int indice2, int);
 	virtual void draw();
@@ -208,16 +211,15 @@ protected:
 	//Use this if you want specific colors changed for a specific polyhedron
 	virtual void changeColors();
 
-	//Model transformations
-	glm::mat4 setScaleModelTransformation(float x, float y, float z);
-	glm::mat4 setTranslationModelTransformation(float x, float y, float z);
-	glm::mat4 setRotationModelTransformation(float angle, float x, float y, float z);
+	//For clearing out the composite model transformation matrix after it has been applied to the shader
+	void emptyCompositeModelTransformationMatrix();
 	
 	void initValues();
 
 private:
 	GLfloat randomNumberR, randomNumberG, randomNumberB, randomNumberA;
 	GLuint vColor;
+	float rotationAngle;
 	//Use this if you want all of the polyhedron faces changing colors
 	void animateColorsOfFaces();
 
