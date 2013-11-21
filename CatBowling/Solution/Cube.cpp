@@ -40,17 +40,14 @@ void Cube::initCube(GLfloat x, GLfloat y, GLfloat z, GLfloat halfX, GLfloat half
 	vertices[6] = glm::vec4(  halfWidthExtentX+x,  halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
 	vertices[7] = glm::vec4(  halfWidthExtentX+x, -halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
 
-	aabb.centerPoint = vec3(x, y, z);
-	aabb.halfWidthExtents[0] = halfWidthExtentX;
-	aabb.halfWidthExtents[1] = halfWidthExtentY;
-	aabb.halfWidthExtents[2] = halfWidthExtentZ;
+	collider = new AABB(vec3(x, y, z), halfWidthExtentX, halfWidthExtentY, halfWidthExtentZ);
 
 	initValues();
 
 	if(isWall)
 	{
-		velocity = vec3(0, 0, 0);
-		acceleration = vec3(0, 0, 0);
+		physicsComponent.velocity = vec3(0, 0, 0);
+		physicsComponent.acceleration = vec3(0, 0, 0);
 	}
 }
 
@@ -75,6 +72,7 @@ Cube::~Cube(void)
 	delete vertices;
 	delete points;
 	delete colors;
+	delete collider;
 }
 
 

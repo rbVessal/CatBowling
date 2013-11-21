@@ -49,9 +49,8 @@ void Polyhedron::doCopy(const Polyhedron& other)
 	zNear = other.zNear;
 	zFar = other.zFar;
 
-	aabb = other.aabb;
-	velocity = other.velocity;
-	acceleration = other.acceleration;
+	collider = other.collider;
+	physicsComponent = other.physicsComponent;
 	
 	newRandR = other.newRandR;
 	newRandG= other.newRandG;
@@ -103,8 +102,8 @@ void Polyhedron::initValues()
 	bottom = -1.0, top = 1.0;
 	zNear = 0.5, zFar = 3.0;
 
-	velocity = vec3(0.0, 0.0, 0.0);
-	acceleration = vec3(0.01, 0.01, 0.0);
+	physicsComponent.velocity = vec3(0.0, 0.0, 0.0);
+	physicsComponent.acceleration = vec3(0.01, 0.01, 0.0);
 }
 
 void Polyhedron::init(GLuint program)
@@ -135,7 +134,6 @@ void Polyhedron::setupVAO(GLuint program)
     view = glGetUniformLocation( program, "viewMatrix" );
     projection = glGetUniformLocation( program, "projection" );
 	transformationMatrix = glGetUniformLocation(program, "transformationMatrix");
-	
 }
 
 void Polyhedron::setupVBO()
@@ -148,20 +146,20 @@ void Polyhedron::setupVBO()
     glBufferSubData( GL_ARRAY_BUFFER, NumVertices * sizeof(glm::vec4), NumVertices * sizeof(color4), colors );
 }
 
-//Getter for AABB
-AABB Polyhedron::getAABB()
+// Setters and Getters
+Collider* Polyhedron::getCollider()
 {
-	return aabb;
+	return collider;
 }
 
 vec3 Polyhedron::getVelocity()
 {
-	return velocity;
+	return physicsComponent.velocity;
 }
 
 void Polyhedron::setVelocity(float x, float y, float z)
 {
-	velocity = vec3(x, y, z);
+	physicsComponent.velocity = vec3(x, y, z);
 }
 
 void Polyhedron::draw()
@@ -178,8 +176,8 @@ void Polyhedron::drawTriangles(int indice0, int indice1, int indice2, int)
 //see: http://physics2d.com/content/euler-integration
 void Polyhedron::eulerIntegrationUpdatePosition()
 {
-	offsetX += velocity.x;
-	offsetY += velocity.y;
+	offsetX += physicsComponent.velocity.x;
+	offsetY += physicsComponent.velocity.y;
 }
 
 void Polyhedron::move(Polyhedron** polyhedronArray, int size)
@@ -200,14 +198,15 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 				acceleration.y *= -1;
 			}*/
 
-			vec3 newVelocity = aabb.collisionResponseVector(other->getAABB(), getVelocity());
+			
+			vec3 newVelocity = collider->collisionResponseVector(other->getCollider(), getVelocity());
 
-			if(newVelocity.x != velocity.x)
-				acceleration.x *= -1;
-			if(newVelocity.y != velocity.y)
-				acceleration.y *= -1;
-			if(newVelocity.z != velocity.z)
-				acceleration.z *= -1;
+			if(newVelocity.x != physicsComponent.velocity.x)
+				physicsComponent.acceleration.x *= -1;
+			if(newVelocity.y != physicsComponent.velocity.y)
+				physicsComponent.acceleration.y *= -1;
+			if(newVelocity.z != physicsComponent.velocity.z)
+				physicsComponent.acceleration.z *= -1;
 
 			this->setVelocity(newVelocity.x, newVelocity.y, newVelocity.z);
 		}
@@ -216,7 +215,11 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 	eulerIntegrationUpdatePosition();
 
 	//Update AABB
-	aabb.centerPoint = vec3(centerX + offsetX, centerY + offsetY, centerZ + offsetZ);
+	AABB* aabb = dynamic_cast<AABB*>(collider);
+	if(aabb)
+	{
+		aabb->centerPoint = vec3(centerX + offsetX, centerY + offsetY, centerZ + offsetZ);
+	}
 }
 
 void Polyhedron::changeColors()
