@@ -6,6 +6,7 @@
 
 Polyhedron::Polyhedron(void)
 {
+	rotationAngle = 0;
 }
 
 Polyhedron::Polyhedron(const Polyhedron& other)
@@ -25,6 +26,7 @@ const Polyhedron& Polyhedron::operator=(const Polyhedron& other)
 
 void Polyhedron::doCopy(const Polyhedron& other)
 {
+	rotationAngle = 0;
 	centerX = other.centerX;
 	centerY = other.centerY;
 	centerZ = other.centerZ;
@@ -69,6 +71,8 @@ void Polyhedron::doCopy(const Polyhedron& other)
 	randomNumberB = other.randomNumberB;
 	randomNumberA = other.randomNumberA;
 
+	compositeModelTransformationMatrix = other.compositeModelTransformationMatrix;
+
 	for(int i=0; i<8; i++)
 	{
 		vertex_colors[i] = other.vertex_colors[i];
@@ -104,6 +108,9 @@ void Polyhedron::initValues()
 
 	physicsComponent.velocity = vec3(0.0, 0.0, 0.0);
 	physicsComponent.acceleration = vec3(0.01, 0.01, 0.0);
+
+	//Initialize composite transformation matrix to indentity matrix
+	compositeModelTransformationMatrix = glm::mat4(1.0f);
 }
 
 void Polyhedron::init(GLuint program)
@@ -244,32 +251,13 @@ void Polyhedron::animateColorsOfFaces()
 			newRandA = static_cast<float>(rand() % 100) / 100;
 			colors[i] = color4(newRandR, newRandG, newRandB, newRandA);
 		}
+		rotationAngle++;
 	}
 }
 
-//Scale Model Transformation
-glm::mat4 Polyhedron::setScaleModelTransformation(float x, float y, float z)
+void Polyhedron::clearCompositeModelTransformationMatrix()
 {
-	//Pass in indentity matrix and the 3D coordinates passed in to glm scale
-	//to return back a scale model transformation
-	//see: http://stackoverflow.com/questions/12838375/model-matrix-in-glm
-	return glm::scale(glm::mat4(1.0f), glm::vec3(x, y, z));
-}
-
-//Translation Model Transformation
-glm::mat4 Polyhedron::setTranslationModelTransformation(float x, float y, float z)
-{
-	return glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
-}
-
-//Rotation Model Transformation
-glm::mat4 Polyhedron::setRotationModelTransformation(float angle, float x, float y, float z)
-{
-	//Note: Angle should be expressed in radians if GLM_FORCE_RADIANS is defined
-	//otherwise use degrees
-	//x, y, and z should be normalized coordinates as each of them represents
-	//the axis
-	return glm::rotate(glm::mat4(1.0f), angle, glm::vec3(x, y, z));
+	compositeModelTransformationMatrix = glm::mat4(1);
 }
 
 void Polyhedron::display( void )
@@ -289,9 +277,21 @@ void Polyhedron::display( void )
 
 	//Define the model matrix using transformations
 	//Transformations - Scaling, Rotating, Translation, Skewing
-	//glm::mat4 scalingMatrix = setScaleModelTransformation(1.0f, 1.0f, 1.0f);
-	glm::mat4 translationMatrix = setTranslationModelTransformation(offsetX, offsetY, offsetZ);
-	glUniformMatrix4fv( transformationMatrix, 1, GL_FALSE, glm::value_ptr(translationMatrix));
+	//see: http://stackoverflow.com/questions/12838375/model-matrix-in-glm
+	//compositeModelTransformationMatrix = glm::scale(compositeModelTransformationMatrix, glm::vec3(offsetX, offsetY, offsetZ));
+	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(offsetX, offsetY, offsetZ));
+	//Shearing example
+	//compositeModelTransformationMatrix = glm::shearX3D(compositeModelTransformationMatrix, 1.0f, 1.0f);
+
+	//Note: Angle should be expressed in radians if GLM_FORCE_RADIANS is defined
+	//otherwise use degrees
+	//x, y, and z should be normalized coordinates as each of them represents
+	//the axis
+	//compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+	//GLM matrices are already transposed, so we can pass in GL_FALSE
+	glUniformMatrix4fv( transformationMatrix, 1, GL_FALSE, glm::value_ptr(compositeModelTransformationMatrix));
+	//Empty out the composite transformation matrix after it has been applied to the shader
+	clearCompositeModelTransformationMatrix();
 
 	//Define the view matrix as the eye coordinates
 	vec4  eye( radius*sin(theta)*cos(phi),

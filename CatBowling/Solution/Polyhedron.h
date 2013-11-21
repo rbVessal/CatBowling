@@ -6,6 +6,7 @@
 //see: http://www.g-truc.net/project-0016.html
 #include "glm\gtc\matrix_transform.hpp" //for both model and view transformations
 #include "glm\gtc\type_ptr.hpp"  //for using value_ptr to get an array of floats to pass in to shader
+#include "glm\gtx\transform2.hpp" //for shearing see: http://glm.g-truc.net/0.9.0/api/a00193.html
 
 typedef glm::vec4  color4;
 //typedef glm::vec4  point4;
@@ -77,6 +78,9 @@ protected:
 	int timerInterval;
 	int previousTime;
 	int currentTime;
+
+	//Composite Model Transformation Matrix
+	glm::mat4 compositeModelTransformationMatrix;
 	
 	virtual void drawTriangles(int indice0, int indice1, int indice2, int);
 	virtual void draw();
@@ -87,16 +91,15 @@ protected:
 	//Use this if you want specific colors changed for a specific polyhedron
 	virtual void changeColors();
 
-	//Model transformations
-	glm::mat4 setScaleModelTransformation(float x, float y, float z);
-	glm::mat4 setTranslationModelTransformation(float x, float y, float z);
-	glm::mat4 setRotationModelTransformation(float angle, float x, float y, float z);
+	//For clearing out the composite model transformation matrix after it has been applied to the shader
+	void clearCompositeModelTransformationMatrix();
 	
 	void initValues();
 
 private:
 	GLfloat randomNumberR, randomNumberG, randomNumberB, randomNumberA;
 	GLuint vColor;
+	float rotationAngle;
 	//Use this if you want all of the polyhedron faces changing colors
 	void animateColorsOfFaces();
 
