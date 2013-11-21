@@ -157,8 +157,8 @@ void idle()
 	//Move each polyhedron
 	for(int i = 0; i < sizeOfPolyhedronArray; i++)
 	{
-		//Polyhedron* polyhedron = polyhedronArray[i];
-		//polyhedron->move(polyhedronArray, sizeOfPolyhedronArray);
+		Polyhedron* polyhedron = polyhedronArray[i];
+		polyhedron->move(polyhedronArray, sizeOfPolyhedronArray);
 	}
 
 	Polyhedron** otherArray = &polyhedronArray[0];
