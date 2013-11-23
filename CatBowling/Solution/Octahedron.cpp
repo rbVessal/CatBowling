@@ -28,7 +28,7 @@ void Octahedron::initOctahedron(GLfloat x, GLfloat y, GLfloat z)
     vertices[4] = glm::vec4(  0.0 + x, 0.0 + y,  -0.5 + z, 1.0 );//back
 	vertices[5] = glm::vec4(0.0 + x, -0.5 + y, 0.0 + z, 1.0);//bottom
 	
-	collider = new AABB(vec3(x, y, z), 0.5, 0.5, 0.5);
+	collider = new AABB(glm::vec3(x, y, z), 0.5, 0.5, 0.5);
 
 	initValues();
 }

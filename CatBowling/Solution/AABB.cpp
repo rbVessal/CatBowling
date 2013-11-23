@@ -5,7 +5,7 @@ AABB::AABB(void)
 {
 }
 
-AABB::AABB(vec3 center, float half0, float half1, float half2)
+AABB::AABB(glm::vec3 center, float half0, float half1, float half2)
 {
 	centerPoint = center;
 	halfWidthExtents[0] = half0;
@@ -58,7 +58,7 @@ bool AABB::checkAABB(AABB* other)
 
 // Returns the new velocity to use based on the collision
 // (If no collision, return given velocity)
-vec3 AABB::collisionResponseVector(Collider* other, vec3 velocity)
+glm::vec3 AABB::collisionResponseVector(Collider* other, glm::vec3 velocity)
 {
 	AABB* otherAABB = dynamic_cast<AABB*>(other);
 
@@ -67,11 +67,21 @@ vec3 AABB::collisionResponseVector(Collider* other, vec3 velocity)
 		// If collision, calculate a new velocity
 		if(checkAABB(otherAABB))
 		{
+			if(otherAABB->centerPoint.x == 0 && otherAABB->centerPoint.y == 0 && otherAABB->centerPoint.z == 0)
+			{
+				std::cout<< "Cube (other)" << std::endl;
+			}
+
+			if(centerPoint.x == 0 && centerPoint.y == 0 && centerPoint.z == 0)
+			{
+				std::cout<< "Cube" << std::endl;
+			}
+
+
 			// Get the normal (axis)
-			vec3 closestPoint = getClosestPoint(otherAABB->centerPoint);
-			vec3 normal = getNormal(centerPoint - closestPoint);
-			
-			//std::cout << closestPoint << std::endl;
+			glm::vec3 closestPoint = getClosestPoint(otherAABB->centerPoint);
+			glm::vec3 normal = getNormal(centerPoint - closestPoint);
+			//glm::vec3 normal = glm::vec3(1, 0, 0);
 			
 			velocity = glm::reflect(velocity, normal);
 		}
@@ -79,6 +89,7 @@ vec3 AABB::collisionResponseVector(Collider* other, vec3 velocity)
 	return velocity;
 }
 
+/*
 vec3 AABB::getClosestPoint(vec3 otherPoint)
 {
 	vec3 point = centerPoint;
@@ -113,22 +124,59 @@ vec3 AABB::getClosestPoint(vec3 otherPoint)
 	}
 
 	return point;
+}*/
+
+glm::vec3 AABB::getClosestPoint(glm::vec3 otherPoint)
+{
+	glm::vec3 point = otherPoint;
+
+	float minX = centerPoint.x - halfWidthExtents[0];
+	float maxX = centerPoint.x + halfWidthExtents[0];
+	float minY = centerPoint.y - halfWidthExtents[1];
+	float maxY = centerPoint.y + halfWidthExtents[1];
+	float minZ = centerPoint.z - halfWidthExtents[2];
+	float maxZ = centerPoint.z + halfWidthExtents[2];
+
+	if(point.x < minX)
+	{
+		point.x = minX;
+	} else if(point.x > maxX) {
+		point.x = maxX;
+	}
+
+	if(point.y < minY)
+	{
+		point.y = minY;
+	} else if(point.y > maxY) {
+		point.y = maxY;
+	}
+
+	if(point.z < minZ)
+	{
+		point.z = minZ;
+	} else if(point.z > maxZ) {
+		point.z = maxZ;
+	}
+
+	return point;
 }
 
-vec3 AABB::getNormal(vec3 dist)
+
+// 
+glm::vec3 AABB::getNormal(glm::vec3 dist)
 {
-	vec3 normal;
+	glm::vec3 normal;
 	float dotProd[6];
 
 	// World axes
-	dotProd[0] = dot(dist, vec3(1, 0, 0));
-	dotProd[1] = dot(dist, vec3(0, 1, 0));
-	dotProd[2] = dot(dist, vec3(0, 0, 1));
+	dotProd[0] = glm::dot(dist, glm::vec3(1, 0, 0));
+	dotProd[1] = glm::dot(dist, glm::vec3(0, 1, 0));
+	dotProd[2] = glm::dot(dist, glm::vec3(0, 0, 1));
 
 	// Reversed axes
-	dotProd[3] = dot(dist, vec3(-1, 0, 0));
-	dotProd[4] = dot(dist, vec3(0, -1, 0));
-	dotProd[5] = dot(dist, vec3(0, 0, -1));
+	dotProd[3] = glm::dot(dist, glm::vec3(-1, 0, 0));
+	dotProd[4] = glm::dot(dist, glm::vec3(0, -1, 0));
+	dotProd[5] = glm::dot(dist, glm::vec3(0, 0, -1));
 
 	// Square instead of using absolute value
 	for(int i=0; i<6; i++)
@@ -150,13 +198,13 @@ vec3 AABB::getNormal(vec3 dist)
 
 	switch(index)
 	{
-		case 0: normal = vec3(1, 0, 0); break;
-		case 1: normal = vec3(0, 1, 0); break;
-		case 2: normal = vec3(0, 0, 1); break;
-		case 3: normal = vec3(-1, 0, 0); break;
-		case 4: normal = vec3(0, -1, 0); break;
-		case 5: normal = vec3(0, 0, -1); break;
-		default: normal = vec3(0, 0, 0); break;
+		case 0: std::cout<<"x"<<std::endl; normal = glm::vec3(1, 0, 0); break;
+		case 1: std::cout<<"y"<<std::endl; normal = glm::vec3(0, 1, 0); break;
+		case 2: std::cout<<"z"<<std::endl; normal = glm::vec3(0, 0, 1); break;
+		case 3: std::cout<<"-x"<<std::endl; normal = glm::vec3(-1, 0, 0); break;
+		case 4: std::cout<<"-y"<<std::endl; normal = glm::vec3(0, -1, 0); break;
+		case 5: std::cout<<"-z"<<std::endl; normal = glm::vec3(0, 0, -1); break;
+		default: std::cout<<"error"<<std::endl; normal = glm::vec3(0, 0, 0); break;
 	}
 
 	return normal;

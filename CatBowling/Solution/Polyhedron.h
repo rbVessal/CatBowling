@@ -13,10 +13,18 @@ typedef glm::vec4  color4;
 
 struct PhysicsComponent
 {
-	vec3 velocity;
-	vec3 acceleration;
+	glm::vec3 velocity;
+	glm::vec3 acceleration;
 
 	// TODO: implement forces and linear momentum
+	void addForce(GLfloat forceX, GLfloat forceY, GLfloat forceZ)
+	{
+		velocity.x += forceX;
+		velocity.y += forceY;
+		velocity.z += forceZ;
+	}
+
+	
 };
 
 class Polyhedron
@@ -33,7 +41,7 @@ public:
 
 	Collider* getCollider();
 	void setVelocity(float x, float y, float z);
-	vec3 getVelocity();
+	glm::vec3 getVelocity();
 	void eulerIntegrationUpdatePosition();
 	void move(Polyhedron** polyhedronArray, int size);
 
@@ -82,8 +90,8 @@ protected:
 	//Composite Model Transformation Matrix
 	glm::mat4 compositeModelTransformationMatrix;
 	
-	virtual void drawTriangles(int indice0, int indice1, int indice2, int);
-	virtual void draw();
+	virtual void drawTriangles(int indice0, int indice1, int indice2, int){ }
+	virtual void draw(){ }
 
 	void setupVBO();
 	void setupVAO(GLuint);

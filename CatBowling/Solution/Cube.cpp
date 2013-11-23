@@ -40,14 +40,14 @@ void Cube::initCube(GLfloat x, GLfloat y, GLfloat z, GLfloat halfX, GLfloat half
 	vertices[6] = glm::vec4(  halfWidthExtentX+x,  halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
 	vertices[7] = glm::vec4(  halfWidthExtentX+x, -halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
 
-	collider = new AABB(vec3(x, y, z), halfWidthExtentX, halfWidthExtentY, halfWidthExtentZ);
+	collider = new AABB(glm::vec3(x, y, z), halfWidthExtentX, halfWidthExtentY, halfWidthExtentZ);
 
 	initValues();
 
 	if(isWall)
 	{
-		physicsComponent.velocity = vec3(0, 0, 0);
-		physicsComponent.acceleration = vec3(0, 0, 0);
+		physicsComponent.velocity = glm::vec3(0, 0, 0);
+		physicsComponent.acceleration = glm::vec3(0, 0, 0);
 	}
 }
 

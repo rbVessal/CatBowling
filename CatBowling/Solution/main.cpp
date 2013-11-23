@@ -125,7 +125,8 @@ void keyboard( unsigned char key, int x, int y )
 		//keyboard controls for quitting
 		case 033: // Escape Key
 		case 'q': case 'Q':
-			exit( EXIT_SUCCESS );
+			//exit( EXIT_SUCCESS ); // causes memory leaks
+			glutLeaveMainLoop(); // exit without memory leaks
 			break;
 		// Switch between menu and game
 		case ' ':

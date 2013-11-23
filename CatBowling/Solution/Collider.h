@@ -17,9 +17,10 @@ public:
 
 	// Pure-virtual Functions
 	virtual bool checkCollision(Collider*)=0;
-	virtual vec3 getClosestPoint(vec3)=0;
-	virtual vec3 collisionResponseVector(Collider*, vec3)=0;
-	virtual vec3 getNormal(vec3)=0;
+	virtual glm::vec3 getClosestPoint(glm::vec3)=0;
+	virtual glm::vec3 collisionResponseVector(Collider*, glm::vec3)=0;
+	virtual glm::vec3 collisionForce(Collider*, glm::vec3)=0;
+	virtual glm::vec3 getNormal(glm::vec3)=0;
 
 	// TODO: OBB, point-to-line collisions, octree, handle tunneling
 };
