@@ -120,6 +120,7 @@ xcopy "$(SolutionDir)$(SolutionName)\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClInclude Include="Cube.h" />
     <ClInclude Include="mat.h" />
     <ClInclude Include="Octahedron.h" />
+    <ClInclude Include="Octree.h" />
     <ClInclude Include="PolyController.h" />
     <ClInclude Include="Polyhedron.h" />
     <ClInclude Include="Tetrahedron.h" />
@@ -132,6 +133,7 @@ xcopy "$(SolutionDir)$(SolutionName)\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClCompile Include="InitShader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Octahedron.cpp" />
+    <ClCompile Include="Octree.cpp" />
     <ClCompile Include="PolyController.cpp" />
     <ClCompile Include="Polyhedron.cpp" />
     <ClCompile Include="Tetrahedron.cpp" />

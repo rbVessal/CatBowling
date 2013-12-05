@@ -6,6 +6,7 @@
 #include "Tetrahedron.h"
 #include "Octahedron.h"
 #include "PolyController.h"
+#include "Octree.h"
 #include <time.h>
 #include "vld.h"
 
@@ -20,6 +21,8 @@ int sizeOfMenuPolys;
 
 PolyController* menu;
 PolyController* game;
+
+Octree* octree;
 
 int screenState;
 GLuint program;
@@ -76,9 +79,10 @@ void init()
 	polyhedronArray[8] = topWallCube;
 	polyhedronArray[9] = bottomWallCube;
 
+	// Menu
 	sizeOfMenuPolys = 1;
 	menuPolys = new Polyhedron*[sizeOfMenuPolys];
-	menuPolys[0] = new Cube(-1.0, 0, 0, 0.5, 0.5, 0.5, false); // testing menu
+	menuPolys[0] = new Cube(-1.0, -3.0, -2.25, 2.0, 0.1, 3.0, false); // testing menu
 	
 	// PolyController init
 	game = new PolyController(polyhedronArray, sizeOfPolyhedronArray);
@@ -86,6 +90,10 @@ void init()
 
 	game->init(program);
 	menu->init(program);
+
+	// Octree
+	octree = new Octree();
+	octree->buildTree(glm::vec3(0, 0, 0), 5, 3);
 	
 
     glEnable( GL_DEPTH_TEST );
@@ -173,8 +181,10 @@ void idle()
 
 int main( int argc, char **argv )
 {
-	screenState = GAME; //MENU;
+	screenState = MENU;
 	srand(time(NULL)); // Random seed
+
+
 
     glutInit( &argc, argv );
     glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
@@ -198,6 +208,7 @@ int main( int argc, char **argv )
 	// Deleting game and menu deletes all of the polyhedrons
 	delete game;
 	delete menu;
+	delete octree;
 
     return 0;
 }

@@ -13,18 +13,15 @@ typedef glm::vec4  color4;
 
 struct PhysicsComponent
 {
+	float mass;
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
 
 	// TODO: implement forces and linear momentum
 	void addForce(GLfloat forceX, GLfloat forceY, GLfloat forceZ)
 	{
-		velocity.x += forceX;
-		velocity.y += forceY;
-		velocity.z += forceZ;
+		
 	}
-
-	
 };
 
 class Polyhedron

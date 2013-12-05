@@ -242,7 +242,7 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 	AABB* aabb = dynamic_cast<AABB*>(collider);
 	if(aabb)
 	{
-		aabb->centerPoint = glm::vec3(centerX + offsetX, centerY + offsetY, centerZ + offsetZ);
+		aabb->setCenter(glm::vec3(centerX + offsetX, centerY + offsetY, centerZ + offsetZ));
 	}
 }
 

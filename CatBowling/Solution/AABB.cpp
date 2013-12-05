@@ -67,17 +67,6 @@ glm::vec3 AABB::collisionResponseVector(Collider* other, glm::vec3 velocity)
 		// If collision, calculate a new velocity
 		if(checkAABB(otherAABB))
 		{
-			if(otherAABB->centerPoint.x == 0 && otherAABB->centerPoint.y == 0 && otherAABB->centerPoint.z == 0)
-			{
-				std::cout<< "Cube (other)" << std::endl;
-			}
-
-			if(centerPoint.x == 0 && centerPoint.y == 0 && centerPoint.z == 0)
-			{
-				std::cout<< "Cube" << std::endl;
-			}
-
-
 			// Get the normal (axis)
 			glm::vec3 closestPoint = getClosestPoint(otherAABB->centerPoint);
 			glm::vec3 normal = getNormal(centerPoint - closestPoint);
@@ -198,13 +187,13 @@ glm::vec3 AABB::getNormal(glm::vec3 dist)
 
 	switch(index)
 	{
-		case 0: std::cout<<"x"<<std::endl; normal = glm::vec3(1, 0, 0); break;
-		case 1: std::cout<<"y"<<std::endl; normal = glm::vec3(0, 1, 0); break;
-		case 2: std::cout<<"z"<<std::endl; normal = glm::vec3(0, 0, 1); break;
-		case 3: std::cout<<"-x"<<std::endl; normal = glm::vec3(-1, 0, 0); break;
-		case 4: std::cout<<"-y"<<std::endl; normal = glm::vec3(0, -1, 0); break;
-		case 5: std::cout<<"-z"<<std::endl; normal = glm::vec3(0, 0, -1); break;
-		default: std::cout<<"error"<<std::endl; normal = glm::vec3(0, 0, 0); break;
+		case 0: normal = glm::vec3(1, 0, 0); break;
+		case 1: normal = glm::vec3(0, 1, 0); break;
+		case 2: normal = glm::vec3(0, 0, 1); break;
+		case 3: normal = glm::vec3(-1, 0, 0); break;
+		case 4: normal = glm::vec3(0, -1, 0); break;
+		case 5: normal = glm::vec3(0, 0, -1); break;
+		default: normal = glm::vec3(0, 0, 0); break;
 	}
 
 	return normal;
