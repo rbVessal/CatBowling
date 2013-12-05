@@ -214,11 +214,12 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 				}
 			}*/
 			
+			// - - - - - - - - 
 
 			// Method 2:
 			// Use any collider to get a vector that is reflected over the collision normal
-			glm::vec3 v1 = collider->collisionResponseVector(other->getCollider(), getVelocity());
-			glm::vec3 v2 = collider->collisionResponseVector(other->getCollider(), other->getVelocity());
+			//glm::vec3 v1 = collider->collisionResponseVector(other->getCollider(), getVelocity());
+			//glm::vec3 v2 = collider->collisionResponseVector(other->getCollider(), other->getVelocity());
 
 			/*
 			if(v1.x != physicsComponent.velocity.x)
@@ -230,8 +231,14 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 				*/
 				
 			// Update this and other's velocities from the collision
-			this->setVelocity(v1.x, v1.y, v1.z);
-			other->setVelocity(v2.x, v2.y, v2.z);
+			//this->setVelocity(v1.x, v1.y, v1.z);
+			//other->setVelocity(v2.x, v2.y, v2.z);
+
+			// - - - - - - - - - - -
+
+			// Method 3:
+			// Use the octree. See testCollision()
+			// ...
 
 		}
 	}
@@ -246,10 +253,28 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 	}
 }
 
-void Polyhedron::changeColors()
+void Polyhedron::testCollision(Polyhedron* other)
+{
+	// Use any collider to get a vector that is reflected over the collision normal
+	glm::vec3 v1 = collider->collisionResponseVector(other->getCollider(), getVelocity());
+	glm::vec3 v2 = collider->collisionResponseVector(other->getCollider(), other->getVelocity());
+
+	if(v1.x != physicsComponent.velocity.x)
+		physicsComponent.acceleration.x *= -1;
+	if(v1.y != physicsComponent.velocity.y)
+		physicsComponent.acceleration.y *= -1;
+	if(v1.z != physicsComponent.velocity.z)
+		physicsComponent.acceleration.z *= -1;
+				
+	// Update this and other's velocities from the collision
+	this->setVelocity(v1.x, v1.y, v1.z);
+	other->setVelocity(v2.x, v2.y, v2.z);
+}
+
+/*void Polyhedron::changeColors()
 {
 	
-}
+}*/
 
 void Polyhedron::animateColorsOfFaces()
 {
