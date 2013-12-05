@@ -16,6 +16,18 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{5d567260-b47e-4d00-b07b-06ba689f3ad9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Geometry">
+      <UniqueIdentifier>{56c4d33e-f7af-4d73-b4a9-10fc39d454ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Geometry">
+      <UniqueIdentifier>{5bc8be9e-ae76-404d-968e-d6568d87061c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Collision Detection">
+      <UniqueIdentifier>{d49b78fc-59a4-44c7-9c6e-c7439df0b181}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Collision Detection">
+      <UniqueIdentifier>{8e2c609e-551a-4750-ab17-0cda60f865bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\res\ICON.rc">
@@ -40,46 +52,64 @@
     <ClInclude Include="mat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tetrahedron.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vec.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Polyhedron.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Octahedron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PolyController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Polyhedron.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Tetrahedron.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Octahedron.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
     <ClInclude Include="Cube.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Header Files\Collision Detection</Filter>
+    </ClInclude>
+    <ClInclude Include="AABB.h">
+      <Filter>Header Files\Collision Detection</Filter>
+    </ClInclude>
+    <ClInclude Include="Octree.h">
+      <Filter>Header Files\Collision Detection</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Cube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="InitShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Octahedron.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PolyController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Polyhedron.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Tetrahedron.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Polyhedron.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Octahedron.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Source Files\Collision Detection</Filter>
+    </ClCompile>
+    <ClCompile Include="AABB.cpp">
+      <Filter>Source Files\Collision Detection</Filter>
+    </ClCompile>
+    <ClCompile Include="Octree.cpp">
+      <Filter>Source Files\Collision Detection</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

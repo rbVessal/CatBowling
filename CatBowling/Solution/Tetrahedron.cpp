@@ -26,10 +26,7 @@ void Tetrahedron::initTetrahedron(GLfloat x, GLfloat y, GLfloat z)
     vertices[2] = glm::vec4(  0.0 + x,  0.5 + y,  0.0 + z, 1.0 );//top
     vertices[3] = glm::vec4(  0.0 + x, -1.0 + y,  1.0 + z, 1.0 );//back
 
-	aabb.centerPoint = vec3(x, y, z);
-	aabb.halfWidthExtents[0] = 0.5;
-	aabb.halfWidthExtents[1] = 0.75;
-	aabb.halfWidthExtents[2] = 0.75;
+	collider = new AABB(glm::vec3(x, y, z), 0.5, 0.75, 0.75);
 
 	initValues();
 }
@@ -58,6 +55,7 @@ Tetrahedron::~Tetrahedron(void)
 	delete vertices;
 	delete points;
 	delete colors;
+	delete collider;
 }
 
 // generate 12 triangles: 36 vertices and 36 colors

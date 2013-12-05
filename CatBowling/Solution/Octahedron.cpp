@@ -28,10 +28,7 @@ void Octahedron::initOctahedron(GLfloat x, GLfloat y, GLfloat z)
     vertices[4] = glm::vec4(  0.0 + x, 0.0 + y,  -0.5 + z, 1.0 );//back
 	vertices[5] = glm::vec4(0.0 + x, -0.5 + y, 0.0 + z, 1.0);//bottom
 	
-	aabb.centerPoint = vec3(x, y, z);
-	aabb.halfWidthExtents[0] = 0.5;
-	aabb.halfWidthExtents[1] = 0.5;
-	aabb.halfWidthExtents[2] = 0.5;
+	collider = new AABB(glm::vec3(x, y, z), 0.5, 0.5, 0.5);
 
 	initValues();
 }
@@ -60,6 +57,7 @@ Octahedron::~Octahedron(void)
 	delete vertices;
 	delete points;
 	delete colors;
+	delete collider;
 }
 
 void Octahedron::draw()
@@ -72,7 +70,6 @@ void Octahedron::draw()
 	drawTriangles(2, 5, 3);//bottom front right face
 	drawTriangles(3, 5, 4);//bottom back right face
 	drawTriangles(4, 5, 1);//bottom back left face
-	
 }
 
 void Octahedron::drawTriangles( int a, int b, int c )
