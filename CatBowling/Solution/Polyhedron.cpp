@@ -297,9 +297,24 @@ void Polyhedron::animateColorsOfFaces()
 	}
 }
 
+//For clearing out the composite model transformation matrix after it has been applied to the shader
 void Polyhedron::clearCompositeModelTransformationMatrix()
 {
 	compositeModelTransformationMatrix = glm::mat4(1);
+}
+
+void Polyhedron::translateBackToOrigin()
+{
+	//Translate back the points using the center
+	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-centerX, -centerY, -centerZ));
+	//Then translate back using the total offset/velocity
+	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-offsetX, -offsetY, -offsetZ));
+}
+void Polyhedron::translateBackToCurrentPosition()
+{
+	//compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+
+	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(offsetX, offsetY, offsetZ));
 }
 
 void Polyhedron::display( void )
@@ -320,8 +335,13 @@ void Polyhedron::display( void )
 	//Define the model matrix using transformations
 	//Transformations - Scaling, Rotating, Translation, Skewing
 	//see: http://stackoverflow.com/questions/12838375/model-matrix-in-glm
-	//compositeModelTransformationMatrix = glm::scale(compositeModelTransformationMatrix, glm::vec3(offsetX, offsetY, offsetZ));
-	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(offsetX, offsetY, offsetZ));
+	//Clear the composite transformation matrix
+	clearCompositeModelTransformationMatrix();
+	//First translate back to origin to ensure the other model transformations are applied correctly
+	//translateBackToOrigin();
+	translateBackToCurrentPosition();
+	//compositeModelTransformationMatrix = glm::scale(compositeModelTransformationMatrix, glm::vec3(0.5, 0.5, 1.0));
+	
 	//Shearing example
 	//compositeModelTransformationMatrix = glm::shearX3D(compositeModelTransformationMatrix, 1.0f, 1.0f);
 
@@ -329,11 +349,10 @@ void Polyhedron::display( void )
 	//otherwise use degrees
 	//x, y, and z should be normalized coordinates as each of them represents
 	//the axis
-	//compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+	compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 0.0f, 2.0f));
 	//GLM matrices are already transposed, so we can pass in GL_FALSE
 	glUniformMatrix4fv( transformationMatrix, 1, GL_FALSE, glm::value_ptr(compositeModelTransformationMatrix));
-	//Empty out the composite transformation matrix after it has been applied to the shader
-	clearCompositeModelTransformationMatrix();
+	
 
 	//Define the view matrix as the eye coordinates
 	vec4  eye( radius*sin(theta)*cos(phi),

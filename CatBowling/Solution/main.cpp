@@ -48,23 +48,23 @@ void init()
 	cube2->setVelocity(-speed, speed, 0.0);
 
 	// right
-	Tetrahedron* tetrahedron = new Tetrahedron(0, -2.5, -0.1);
+	Tetrahedron* tetrahedron = new Tetrahedron(0.0, 2.25, -0.1);
 	tetrahedron->setVelocity(0.0, speed, 0.0);
 
 	// left
-	Tetrahedron* tetrahedron2 = new Tetrahedron(-3.2, -2, -0.1);
+	Tetrahedron* tetrahedron2 = new Tetrahedron(-2.0, 2.25, -0.1);
 	tetrahedron2->setVelocity(speed, speed, 0.0);
     
-	Octahedron* octahedron = new Octahedron(-1, -3, 0);
+	Octahedron* octahedron = new Octahedron(0.0, -1.5, 0.0);
 	octahedron->setVelocity(speed, 0.0, 0.0);
 
-	Octahedron* octahedron2 = new Octahedron(-2.1, -3, 0);
+	Octahedron* octahedron2 = new Octahedron(2.0, -1.5, 0.0);
 	octahedron2->setVelocity(speed, speed, 0.0);
 
-	Cube* leftWallCube = new Cube(-5, 0, 0.5, 1.0, 6.0, 1.25, true);
-	Cube* rightWallCube = new Cube(2.95, 0, 0.5, 1.0, 16.0, 1.25, true);
-	Cube* topWallCube = new Cube(-1, 2.2, 0.5, 16.0, 0.25, 1.25, true);
-	Cube* bottomWallCube = new Cube(-1, -3.15, 0.5, 6.0, 0.25, 1.25, true);
+	Cube* leftWallCube = new Cube(-5, 0, 0.5, 1.0, 6.0, 1.25, false);
+	Cube* rightWallCube = new Cube(2.95, 0, 0.5, 1.0, 16.0, 1.25, false);
+	Cube* topWallCube = new Cube(-1, 2.2, 0.5, 16.0, 0.25, 1.25, false);
+	Cube* bottomWallCube = new Cube(-1, -3.15, 0.5, 6.0, 0.25, 1.25, false);
 
 	sizeOfPolyhedronArray = 10;
 	polyhedronArray = new Polyhedron*[sizeOfPolyhedronArray];

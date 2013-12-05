@@ -103,6 +103,10 @@ protected:
 	//Use this if you want specific colors changed for a specific polyhedron
 	virtual void changeColors(){ }
 
+	//Translate back to origin before applying other modeling transformations
+	void translateBackToOrigin();
+	void translateBackToCurrentPosition();
+
 	//For clearing out the composite model transformation matrix after it has been applied to the shader
 	void clearCompositeModelTransformationMatrix();
 	
