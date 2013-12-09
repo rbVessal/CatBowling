@@ -94,7 +94,13 @@ void init()
 	// Octree
 	octree = new Octree();
 	octree->buildTree(glm::vec3(0, 0, 0), 5, 3);
-	
+
+	// Add each polyhedron
+	for(int i = 0; i < sizeOfPolyhedronArray; i++)
+	{
+		// TODO: figure out something for the radius
+		octree->insert(polyhedronArray[i], polyhedronArray[i]->getCenter(), 1.0);
+	}
 
     glEnable( GL_DEPTH_TEST );
 }
@@ -163,6 +169,9 @@ void reshape( int width, int height )
 //Update loop
 void idle()
 {
+	// Check Octree
+	octree->checkCollisions();
+
 	//Move each polyhedron
 	for(int i = 0; i < sizeOfPolyhedronArray; i++)
 	{
@@ -181,10 +190,8 @@ void idle()
 
 int main( int argc, char **argv )
 {
-	screenState = MENU;
+	screenState = GAME;
 	srand(time(NULL)); // Random seed
-
-
 
     glutInit( &argc, argv );
     glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );

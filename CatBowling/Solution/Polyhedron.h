@@ -24,6 +24,11 @@ struct PhysicsComponent
 	{
 		
 	}
+
+	glm::vec3 getMomentum()
+	{
+		return mass * velocity;
+	}
 };
 
 class Polyhedron
@@ -41,8 +46,10 @@ public:
 	Collider* getCollider();
 	void setVelocity(float x, float y, float z);
 	glm::vec3 getVelocity();
+	glm::vec3 getCenter(){ return glm::vec3(centerX, centerY, centerZ); }
 	void eulerIntegrationUpdatePosition();
 	void move(Polyhedron** polyhedronArray, int size);
+	void testCollision(Polyhedron*);
 
 protected:
 	void doCopy(const Polyhedron&); // used for inherited copy constructors
@@ -98,7 +105,7 @@ protected:
 	void setupVAO(GLuint);
 
 	//Use this if you want specific colors changed for a specific polyhedron
-	virtual void changeColors();
+	virtual void changeColors(){ }
 
 	//Translate back to origin before applying other modeling transformations
 	void translateBackToOrigin();

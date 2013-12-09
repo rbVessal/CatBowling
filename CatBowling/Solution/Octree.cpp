@@ -9,6 +9,8 @@ Octree::~Octree(void)
 {
 	// TODO: deallocate all nodes...
 	deleteNode(root);
+
+	std::cout << "done";
 }
 
 void Octree::deleteNode(OctreeNode* node)
@@ -25,7 +27,23 @@ void Octree::deleteNode(OctreeNode* node)
 			}
 		}
 
+		// Delete any objects in the node, then delete the node
+		deleteObjs(node->objList);
 		delete node;
+	}
+}
+
+void Octree::deleteObjs(OctreeObject* obj)
+{
+	// Deletes linked list in reverse order
+	if(obj != NULL)
+	{
+		if(obj->next != NULL)
+		{
+			deleteObjs(obj->next);
+		}
+	
+		delete obj;
 	}
 }
 
@@ -72,9 +90,22 @@ OctreeNode* Octree::buildTree(glm::vec3 centerPoint, float halfWidth, int stopDe
 	return NULL;
 }
 
+// Create an OctreeObject for a polyhedron and insert it into tree
+void Octree::insert(Polyhedron* poly, glm::vec3 center, float radius)
+{
+	// Create the OctreeObject
+	OctreeObject* obj = new OctreeObject();
+	obj->polyhedron = poly;
+	obj->centerPoint = center;
+	obj->radius = radius;
+
+	// Pass in the root as the first node for standard tree traversal
+	insertObject(root, obj);
+}
+
 // Source: Real-Time Collision Detection
 // Ch 7.3 - Octrees
-void insertObject(OctreeNode* node, OctreeObject* obj)
+void Octree::insertObject(OctreeNode* node, OctreeObject* obj)
 {
 	int index = 0;
 	int straddle = 0;
@@ -108,9 +139,14 @@ void insertObject(OctreeNode* node, OctreeObject* obj)
 	}
 }
 
+void Octree::checkCollisions()
+{
+	testAllCollisions(root);
+}
+
 // Source: Real-Time Collision Detection
 // Ch 7.3 - Octrees
-void testAllCollisions(OctreeNode* node)
+void Octree::testAllCollisions(OctreeNode* node)
 {
 	// Keep track of all ancestor object lists in a stack/list
 	// (static is for using same data through each recursive call)
@@ -135,7 +171,7 @@ void testAllCollisions(OctreeNode* node)
 					break;
 
 				// Perform the collision test between objA and objB in same manner
-				objA->collider->checkCollision(objB->collider);
+				objA->polyhedron->testCollision(objB->polyhedron);
 			}
 		}
 	}

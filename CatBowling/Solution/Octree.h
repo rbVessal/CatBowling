@@ -1,7 +1,7 @@
 #ifndef _OCTREE_
 #define _OCTREE_
 
-#include "Collider.h"
+#include "Polyhedron.h"
 
 // An object represented as a sphere to easily fit the octree grid
 // Functions as a linked list
@@ -10,7 +10,8 @@ struct OctreeObject
 	glm::vec3 centerPoint;
 	float radius;
 
-	Collider* collider;  // todo: change to polyhedrons
+	//Collider* collider;  // todo: change to polyhedrons
+	Polyhedron* polyhedron;
 	OctreeObject* next;
 };
 
@@ -34,13 +35,15 @@ public:
 	Octree(void);
 	~Octree(void);
 
-	void deleteNode(OctreeNode*);
-
 	OctreeNode* buildTree(glm::vec3, float, int);
-	void insertObject(OctreeNode*, OctreeObject*);
-	void testAllCollisions(OctreeNode*);
+	void insert(Polyhedron*, glm::vec3, float);
+	void checkCollisions();
 
 private:
 	OctreeNode* root;
+	void insertObject(OctreeNode*, OctreeObject*);
+	void deleteNode(OctreeNode*);
+	void deleteObjs(OctreeObject*);
+	void testAllCollisions(OctreeNode*);
 };
 #endif
