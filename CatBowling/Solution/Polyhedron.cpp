@@ -30,6 +30,10 @@ void Polyhedron::doCopy(const Polyhedron& other)
 	centerX = other.centerX;
 	centerY = other.centerY;
 	centerZ = other.centerZ;
+	halfWidthExtentX = other.halfWidthExtentX;
+	halfWidthExtentY = other.halfWidthExtentY;
+	halfWidthExtentZ = other.halfWidthExtentZ;
+	rotationAngleAxis = other.rotationAngleAxis;
 	offsetX = other.offsetX;
 	offsetY = other.offsetY;
 	offsetZ = other.offsetZ;
@@ -111,6 +115,8 @@ void Polyhedron::initValues()
 
 	//Initialize composite transformation matrix to indentity matrix
 	compositeModelTransformationMatrix = glm::mat4(1.0f);
+	//Initialize the angle axis
+	rotationAngleAxis = glm::vec3(centerX + halfWidthExtentX, centerY + halfWidthExtentY, centerZ + halfWidthExtentZ);
 }
 
 void Polyhedron::init(GLuint program)
@@ -324,7 +330,16 @@ void Polyhedron::display( void )
 	//otherwise use degrees
 	//x, y, and z should be normalized coordinates as each of them represents
 	//the axis
-	compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 0.0f, 2.0f));
+	//see: http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
+	//Create the identity quaternion
+	//glm::quat quaternion = quaternion = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);
+	//Calculate a normalized axis from the center of the polyhedron
+
+	//quaternion = glm::angleAxis(rotationAngle, 1.0f, 1.0f, 1.0f);
+	glm::quat rotationQuaternion = glm::quat_cast(glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 0.0f, 2.0f)));
+	glm::mat4 rotationQuaternionMatrix = glm::mat4_cast(rotationQuaternion);
+	compositeModelTransformationMatrix = rotationQuaternionMatrix * compositeModelTransformationMatrix;
+	//compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 0.0f, 2.0f));
 	//GLM matrices are already transposed, so we can pass in GL_FALSE
 	glUniformMatrix4fv( transformationMatrix, 1, GL_FALSE, glm::value_ptr(compositeModelTransformationMatrix));
 	

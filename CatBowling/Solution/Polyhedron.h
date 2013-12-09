@@ -7,6 +7,8 @@
 #include "glm\gtc\matrix_transform.hpp" //for both model and view transformations
 #include "glm\gtc\type_ptr.hpp"  //for using value_ptr to get an array of floats to pass in to shader
 #include "glm\gtx\transform2.hpp" //for shearing see: http://glm.g-truc.net/0.9.0/api/a00193.html
+#include "glm\gtc\quaternion.hpp" //For rotation with quaternions
+#include "glm\gtx\quaternion.hpp"
 
 typedef glm::vec4  color4;
 //typedef glm::vec4  point4;
@@ -46,6 +48,8 @@ protected:
 	void doCopy(const Polyhedron&); // used for inherited copy constructors
 
 	GLfloat centerX, centerY, centerZ;
+	GLfloat halfWidthExtentX, halfWidthExtentY, halfWidthExtentZ;
+	glm::vec3 rotationAngleAxis;
 	GLfloat offsetX, offsetY, offsetZ;
 	int index;
 	int NumVertices;

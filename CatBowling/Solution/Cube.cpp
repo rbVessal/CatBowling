@@ -26,9 +26,9 @@ void Cube::initCube(GLfloat x, GLfloat y, GLfloat z, GLfloat halfX, GLfloat half
 	points = new glm::vec4[NumVertices];
 	colors = new glm::vec4[NumVertices];
 
-	float halfWidthExtentX = halfX;
-	float halfWidthExtentY = halfY;
-	float halfWidthExtentZ = halfZ;
+	this->halfWidthExtentX = halfX;
+	this->halfWidthExtentY = halfY;
+	this->halfWidthExtentZ = halfZ;
 
 	// Vertices of a unit cube centered at origin, sides aligned with axes
 	vertices[0] = glm::vec4( -halfWidthExtentX+x, -halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
