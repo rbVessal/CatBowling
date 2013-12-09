@@ -68,18 +68,15 @@ glm::vec3 AABB::collisionResponseVector(Collider* other, glm::vec3 velocity)
 		if(checkAABB(otherAABB))
 		{
 			// Get the normal (axis)
-			glm::vec3 closestPoint = getClosestPoint(otherAABB->centerPoint);
-			glm::vec3 normal = getNormal(centerPoint - closestPoint);
-			//glm::vec3 normal = glm::vec3(1, 0, 0);
-			
+			glm::vec3 normal = getNormal(otherAABB);
 			velocity = glm::reflect(velocity, normal);
 		}
 	}
 	return velocity;
 }
 
-/*
-vec3 AABB::getClosestPoint(vec3 otherPoint)
+// This is possibly for OBB?
+/*vec3 AABB::getClosestPoint(vec3 otherPoint)
 {
 	vec3 point = centerPoint;
 
@@ -115,6 +112,10 @@ vec3 AABB::getClosestPoint(vec3 otherPoint)
 	return point;
 }*/
 
+// THIS WORKS BUT IS NO LONGER NEEDED HERE
+// Math Primer for Graphics and Game Development
+// A.5 Closest Point on an AABB
+/*
 glm::vec3 AABB::getClosestPoint(glm::vec3 otherPoint)
 {
 	glm::vec3 point = otherPoint;
@@ -149,10 +150,68 @@ glm::vec3 AABB::getClosestPoint(glm::vec3 otherPoint)
 
 	return point;
 }
+*/
 
+// Collision normal of AABB-AABB
+// source: http://www.gamedev.net/topic/567310-platform-game-collision-detection/
+glm::vec3 AABB::getNormal(AABB* other)
+{
+	glm::vec3 normals[6] = 
+	{
+		glm::vec3(1, 0, 0),
+		glm::vec3(-1, 0, 0),
+		glm::vec3(0, 1, 0),
+		glm::vec3(0, -1, 0),
+		glm::vec3(0, 0, 1),
+		glm::vec3(0, 0, -1),
+	};
 
-// 
-glm::vec3 AABB::getNormal(glm::vec3 dist)
+	// Min and max boundaries on this AABB
+	float minX = centerPoint.x - halfWidthExtents[0];
+	float maxX = centerPoint.x + halfWidthExtents[0];
+	float minY = centerPoint.y - halfWidthExtents[1];
+	float maxY = centerPoint.y + halfWidthExtents[1];
+	float minZ = centerPoint.z - halfWidthExtents[2];
+	float maxZ = centerPoint.z + halfWidthExtents[2];
+
+	// Min and max boundaries on other AABB
+	float otherMinX = other->centerPoint.x - other->halfWidthExtents[0];
+	float otherMaxX = other->centerPoint.x + other->halfWidthExtents[0];
+	float otherMinY = other->centerPoint.y - other->halfWidthExtents[1];
+	float otherMaxY = other->centerPoint.y + other->halfWidthExtents[1];
+	float otherMinZ = other->centerPoint.z - other->halfWidthExtents[2];
+	float otherMaxZ = other->centerPoint.z + other->halfWidthExtents[2];
+
+	float distances[6] = 
+	{
+		(otherMaxX - minX), // distance of other AABB to face on 'left' side of this AABB
+		(maxX - otherMinX), // distance of other to 'right' face of this
+
+		(otherMaxY - minY), // distance of other to 'bottom' face of this
+		(maxY - otherMinY), // distance of other to 'top' face of this
+
+		(otherMaxZ - minZ), // distance of other to 'far' face of this
+		(maxZ - otherMinZ) // distance of other to 'near' face of this
+	};
+
+	// Find the smallest
+	float temp = distances[0];
+	int index = 0;
+	for(int i=0; i<6; i++)
+	{
+		if(temp > distances[i])
+		{
+			temp = distances[i];
+			index = i;
+		}
+	}
+
+	return normals[index];
+}
+
+// This works most of the time but has issues with distances of 0
+// See new version of function for better implementation
+/* glm::vec3 AABB::getNormal(glm::vec3 dist)
 {
 	glm::vec3 normal;
 	float dotProd[6];
@@ -198,3 +257,4 @@ glm::vec3 AABB::getNormal(glm::vec3 dist)
 
 	return normal;
 }
+*/

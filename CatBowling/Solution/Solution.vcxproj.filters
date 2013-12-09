@@ -79,6 +79,9 @@
     <ClInclude Include="Octree.h">
       <Filter>Header Files\Collision Detection</Filter>
     </ClInclude>
+    <ClInclude Include="GameController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InitShader.cpp">
@@ -110,6 +113,9 @@
     </ClCompile>
     <ClCompile Include="Octree.cpp">
       <Filter>Source Files\Collision Detection</Filter>
+    </ClCompile>
+    <ClCompile Include="GameController.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -7,10 +7,7 @@ Octree::Octree(void)
 
 Octree::~Octree(void)
 {
-	// TODO: deallocate all nodes...
 	deleteNode(root);
-
-	std::cout << "done";
 }
 
 void Octree::deleteNode(OctreeNode* node)
@@ -153,6 +150,8 @@ void Octree::testAllCollisions(OctreeNode* node)
 	const int MAX_DEPTH = 40;
 	static OctreeNode* ancestorStack[MAX_DEPTH];
 	static int depth = 0;
+
+	static int collisionsDetected=0;
 
 	// Check Collision between all objects on this level and all ancestor objects.
 	// (Current level is its own ancestor)

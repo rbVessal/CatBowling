@@ -10,7 +10,6 @@ struct OctreeObject
 	glm::vec3 centerPoint;
 	float radius;
 
-	//Collider* collider;  // todo: change to polyhedrons
 	Polyhedron* polyhedron;
 	OctreeObject* next;
 };
