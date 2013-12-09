@@ -16,7 +16,7 @@
 #define GAME_PAUSE 2
 #define TESTSTATE 3
 
-//#define TEST_MODE
+//f#define TEST_MODE
 
 // Test objects
 Polyhedron** polyhedronArray;

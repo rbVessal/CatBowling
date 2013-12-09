@@ -7,8 +7,7 @@
 Polyhedron::Polyhedron(void)
 {
 	rotationAngle = 0;
-	translateOnce = false;
-	rotationAxis = glm::vec3(0, 0, 2);
+	rotationAxis = glm::vec3(0, 0, 1);
 
 }
 
@@ -31,6 +30,7 @@ void Polyhedron::doCopy(const Polyhedron& other)
 {
 	rotationAngle = other.rotationAngle;
 	rotationAxis = other.rotationAxis;
+	rotationQuaternionMatrix = other.rotationQuaternionMatrix;
 	centerX = other.centerX;
 	centerY = other.centerY;
 	centerZ = other.centerZ;
@@ -119,10 +119,7 @@ void Polyhedron::initValues()
 
 	//Initialize composite transformation matrix to indentity matrix
 	compositeModelTransformationMatrix = glm::mat4(1.0f);
-	//Initialize the angle axis
-	rotationAngleAxis = glm::vec3(0.0f, 0.0f, centerZ + halfWidthExtentZ);
-	//Normalize it for rotation quaternion
-	rotationAngleAxis = glm::normalize(rotationAngleAxis);
+	rotationQuaternionMatrix = glm::mat4(1.0f);
 }
 
 void Polyhedron::init(GLuint program)
@@ -218,7 +215,32 @@ void Polyhedron::rotate(float angle, glm::vec3 axis)
 	//otherwise use degrees
 	//x, y, and z should be normalized coordinates as each of them represents the axis
 	rotationAngle += angle;
-	rotationAxis = axis;
+	GLfloat xAxis = 0;
+	GLfloat yAxis = 0;
+	GLfloat zAxis = 0;
+	if(axis.x == 1)
+	{
+		xAxis = centerX + halfWidthExtentX;
+	}
+	if(axis.y == 1)
+	{
+		yAxis = centerY + halfWidthExtentY;
+	}
+	if(axis.z == 1)
+	{
+		zAxis = centerZ + halfWidthExtentZ;
+	}
+	
+	//Initialize the angle axis
+	rotationAngleAxis = glm::vec3(xAxis, yAxis, zAxis);
+	//Normalize it for rotation quaternion
+	rotationAngleAxis = glm::normalize(rotationAngleAxis);
+	//see: http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
+	glm::quat quaternion = glm::angleAxis(rotationAngle, rotationAngleAxis);
+	//Convert the quarternion to a 4x4 matrix for the shader
+	rotationQuaternionMatrix = glm::mat4_cast(quaternion);
+	
+	
 }
 
 void Polyhedron::resetPolyhedron()
@@ -386,11 +408,11 @@ void Polyhedron::translateBackToOrigin()
 	//Translate back the points using the center
 	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-centerX, -centerY, -centerZ));
 	//Then translate back using the total offset/velocity
-	//compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-offsetX, -offsetY, -offsetZ));
+	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-offsetX, -offsetY, -offsetZ));
 }
 void Polyhedron::translateBackToCurrentPosition()
 {
-	//compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(offsetX, offsetY, offsetZ));
+	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(offsetX, offsetY, offsetZ));
 	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(centerX, centerY, centerZ));
 }
 
@@ -411,33 +433,20 @@ void Polyhedron::display( void )
 	//see: http://stackoverflow.com/questions/12838375/model-matrix-in-glm
 	//Clear the composite transformation matrix
 	clearCompositeModelTransformationMatrix();
-	//First translate back to origin to ensure the other model transformations are applied correctly
-	//if(!translateOnce)
-	//{
-		translateBackToOrigin();
-		//translateOnce = true;
-	//}
 	
 	//Scaling example
 	//compositeModelTransformationMatrix = glm::scale(compositeModelTransformationMatrix, glm::vec3(0.5, 0.5, 1.0));
 	
 	//Shearing example
 	//compositeModelTransformationMatrix = glm::shearX3D(compositeModelTransformationMatrix, 1.0f, 1.0f);
-
-	//Note: Angle should be expressed in radians if GLM_FORCE_RADIANS is defined
-	//otherwise use degrees
-	//x, y, and z should be normalized coordinates as each of them represents
-	//the axis
-\
-	//see: http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-	//glm::quat quaternion = glm::angleAxis(rotationAngle, rotationAngleAxis);
-	//Convert the quarternion to a 4x4 matrix for the shader
-	//glm::mat4 rotationQuaternionMatrix = glm::mat4_cast(quaternion);
-	//compositeModelTransformationMatrix = rotationQuaternionMatrix * compositeModelTransformationMatrix;
-	//compositeModelTransformationMatrix =  glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+	
 	translateBackToCurrentPosition();
-
+	compositeModelTransformationMatrix = rotationQuaternionMatrix * compositeModelTransformationMatrix;
+	translateBackToOrigin();
+	
+	/*translateBackToCurrentPosition();
 	compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, rotationAxis);
+	translateBackToOrigin();*/
 
 	//GLM matrices are already transposed, so we can pass in GL_FALSE
 	glUniformMatrix4fv( transformationMatrix, 1, GL_FALSE, glm::value_ptr(compositeModelTransformationMatrix));

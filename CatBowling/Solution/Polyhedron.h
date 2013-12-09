@@ -60,10 +60,10 @@ public:
 
 protected:
 	void doCopy(const Polyhedron&); // used for inherited copy constructors
-	bool translateOnce;
 	GLfloat centerX, centerY, centerZ;
 	GLfloat halfWidthExtentX, halfWidthExtentY, halfWidthExtentZ;
 	glm::vec3 rotationAngleAxis;
+	glm::mat4 rotationQuaternionMatrix;
 	GLfloat offsetX, offsetY, offsetZ;
 	int index;
 	int NumVertices;

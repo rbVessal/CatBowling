@@ -75,7 +75,7 @@ void GameController::processInput(unsigned char key)
 
 void GameController::adjustRotation(float degree)
 {
-	ball->rotate(degree, glm::vec3(0, 2, 0));
+	ball->rotate(degree, glm::vec3(0, 1, 0));
 }
 
 void GameController::adjustStrafing(float degree)
