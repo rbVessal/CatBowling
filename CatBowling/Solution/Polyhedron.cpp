@@ -7,6 +7,7 @@
 Polyhedron::Polyhedron(void)
 {
 	rotationAngle = 0;
+	translateOnce = false;
 }
 
 Polyhedron::Polyhedron(const Polyhedron& other)
@@ -116,7 +117,9 @@ void Polyhedron::initValues()
 	//Initialize composite transformation matrix to indentity matrix
 	compositeModelTransformationMatrix = glm::mat4(1.0f);
 	//Initialize the angle axis
-	rotationAngleAxis = glm::vec3(centerX + halfWidthExtentX, centerY + halfWidthExtentY, centerZ + halfWidthExtentZ);
+	rotationAngleAxis = glm::vec3(0.0f, 0.0f, centerZ + halfWidthExtentZ);
+	//Normalize it for rotation quaternion
+	rotationAngleAxis = glm::normalize(rotationAngleAxis);
 }
 
 void Polyhedron::init(GLuint program)
@@ -299,7 +302,7 @@ void Polyhedron::animateColorsOfFaces()
 			newRandA = static_cast<float>(rand() % 100) / 100;
 			colors[i] = color4(newRandR, newRandG, newRandB, newRandA);
 		}
-		rotationAngle++;
+		rotationAngle += 10;
 	}
 }
 
@@ -314,13 +317,12 @@ void Polyhedron::translateBackToOrigin()
 	//Translate back the points using the center
 	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-centerX, -centerY, -centerZ));
 	//Then translate back using the total offset/velocity
-	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-offsetX, -offsetY, -offsetZ));
+	//compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-offsetX, -offsetY, -offsetZ));
 }
 void Polyhedron::translateBackToCurrentPosition()
 {
-	//compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-
-	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(offsetX, offsetY, offsetZ));
+	//compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(offsetX, offsetY, offsetZ));
+	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(centerX, centerY, centerZ));
 }
 
 void Polyhedron::display( void )
@@ -335,17 +337,19 @@ void Polyhedron::display( void )
 	
 	glBindVertexArray( vao );
 
-	//Possibly use for clearing matrices
-	//glLoadIdentity();
-
 	//Define the model matrix using transformations
 	//Transformations - Scaling, Rotating, Translation, Skewing
 	//see: http://stackoverflow.com/questions/12838375/model-matrix-in-glm
 	//Clear the composite transformation matrix
 	clearCompositeModelTransformationMatrix();
 	//First translate back to origin to ensure the other model transformations are applied correctly
-	//translateBackToOrigin();
-	translateBackToCurrentPosition();
+	//if(!translateOnce)
+	//{
+		translateBackToOrigin();
+		//translateOnce = true;
+	//}
+	
+	//Scaling example
 	//compositeModelTransformationMatrix = glm::scale(compositeModelTransformationMatrix, glm::vec3(0.5, 0.5, 1.0));
 	
 	//Shearing example
@@ -356,15 +360,12 @@ void Polyhedron::display( void )
 	//x, y, and z should be normalized coordinates as each of them represents
 	//the axis
 	//see: http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-	//Create the identity quaternion
-	//glm::quat quaternion = quaternion = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);
-	//Calculate a normalized axis from the center of the polyhedron
-
-	//quaternion = glm::angleAxis(rotationAngle, 1.0f, 1.0f, 1.0f);
-	glm::quat rotationQuaternion = glm::quat_cast(glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 0.0f, 2.0f)));
-	glm::mat4 rotationQuaternionMatrix = glm::mat4_cast(rotationQuaternion);
-	compositeModelTransformationMatrix = rotationQuaternionMatrix * compositeModelTransformationMatrix;
-	//compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 0.0f, 2.0f));
+	//glm::quat quaternion = glm::angleAxis(rotationAngle, rotationAngleAxis);
+	//Convert the quarternion to a 4x4 matrix for the shader
+	//glm::mat4 rotationQuaternionMatrix = glm::mat4_cast(quaternion);
+	//compositeModelTransformationMatrix = rotationQuaternionMatrix * compositeModelTransformationMatrix;
+	//compositeModelTransformationMatrix =  glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+	translateBackToCurrentPosition();
 	//GLM matrices are already transposed, so we can pass in GL_FALSE
 	glUniformMatrix4fv( transformationMatrix, 1, GL_FALSE, glm::value_ptr(compositeModelTransformationMatrix));
 	
@@ -376,25 +377,13 @@ void Polyhedron::display( void )
 		 1.0f);
     vec4  at( 0.0f, 0.0f, 0.0f, 1.0f);
     vec4    up( 0.0f, 1.0f, 0.0f, 0.0f);
-	/*glm::vec3  eye( radius*sin(theta)*cos(phi),
-		 radius*sin(theta)*sin(phi),
-		 radius*cos(theta));*/
-	/*glm::vec3 eye(0.0f, 0.1f, 1.0f);
-    glm::vec3  at( 0.0f, 0.1f, 0.0f);
-    glm::vec3    up( 0.0f, 1.0f, 0.0f);*/
 
 	mat4 mv = LookAt(eye, at, up);
 	glUniformMatrix4fv( view, 1, GL_TRUE, mv);
-	//mat4 modelViewMatrix = matrixCompMult(scalingMatrix, mv);
-	//glm::mat4 mv = glm::lookAt(eye, at, up);
-	//glUniformMatrix4fv( model_view, 1, GL_TRUE, glm::value_ptr(mv));*/
 
 	//Define the prespective projection matrix
     mat4  perspectiveProjection = Frustum( left, right, bottom, top, zNear, zFar );
-	glUniformMatrix4fv( projection, 1, GL_TRUE, perspectiveProjection);
-	//glm::mat4 perspectiveProjection = glm::perspective(45.0f, 1.0f, 0.1f, 500.0f);
-	//glUniformMatrix4fv( projection, 1, GL_TRUE, glm::value_ptr(perspectiveProjection) );
-	
+	glUniformMatrix4fv( projection, 1, GL_TRUE, perspectiveProjection);	
 
 	//Draw those beautiful polyhedrons using GL_TRIANGLES
 	glDrawArrays( GL_TRIANGLES, 0, NumVertices );

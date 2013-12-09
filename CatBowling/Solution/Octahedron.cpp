@@ -19,14 +19,17 @@ void Octahedron::initOctahedron(GLfloat x, GLfloat y, GLfloat z)
 	vertices = new glm::vec4[6];
 	points = new glm::vec4[NumVertices];
 	colors = new glm::vec4[NumVertices];
+	this->halfWidthExtentX = 0.5;
+	this->halfWidthExtentY = 0.5;
+	this->halfWidthExtentZ = 0.5;
 
 	// Vertices of a unit Octahedron centered at origin, sides aligned with axes
-	vertices[0] = glm::vec4(  0.0 + x,  0.5 + y,  0.0 + z, 1.0 );//top
-	vertices[1] = glm::vec4( -0.5 + x, 0.0 + y,  0.0 + z, 1.0 );//left
-    vertices[2] = glm::vec4( 0.0 + x,  0.0 + y,  0.5 + z, 1.0);//front
-	vertices[3] = glm::vec4( 0.5 + x, 0.0 + y, 0.0 + z, 1.0);//right
-    vertices[4] = glm::vec4(  0.0 + x, 0.0 + y,  -0.5 + z, 1.0 );//back
-	vertices[5] = glm::vec4(0.0 + x, -0.5 + y, 0.0 + z, 1.0);//bottom
+	vertices[0] = glm::vec4(  0.0 + centerX,  halfWidthExtentY + centerY,  0.0 + centerZ, 1.0 );//top
+	vertices[1] = glm::vec4( -halfWidthExtentX + centerX, 0.0 + centerY,  0.0 + centerZ, 1.0 );//left
+	vertices[2] = glm::vec4( 0.0 + centerX,  0.0 + centerY,  halfWidthExtentZ + centerZ, 1.0);//front
+	vertices[3] = glm::vec4( halfWidthExtentX + centerX, 0.0 + centerY, 0.0 + centerZ, 1.0);//right
+	vertices[4] = glm::vec4(  0.0 + centerX, 0.0 + centerY,  -halfWidthExtentZ + centerZ, 1.0 );//back
+	vertices[5] = glm::vec4(0.0 + centerX, -halfWidthExtentY + centerY, 0.0 + centerZ, 1.0);//bottom
 	
 	collider = new AABB(glm::vec3(x, y, z), 0.5, 0.5, 0.5);
 

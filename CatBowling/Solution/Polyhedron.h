@@ -53,7 +53,7 @@ public:
 
 protected:
 	void doCopy(const Polyhedron&); // used for inherited copy constructors
-
+	bool translateOnce;
 	GLfloat centerX, centerY, centerZ;
 	GLfloat halfWidthExtentX, halfWidthExtentY, halfWidthExtentZ;
 	glm::vec3 rotationAngleAxis;

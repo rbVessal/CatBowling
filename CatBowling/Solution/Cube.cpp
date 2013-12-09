@@ -31,14 +31,14 @@ void Cube::initCube(GLfloat x, GLfloat y, GLfloat z, GLfloat halfX, GLfloat half
 	this->halfWidthExtentZ = halfZ;
 
 	// Vertices of a unit cube centered at origin, sides aligned with axes
-	vertices[0] = glm::vec4( -halfWidthExtentX+x, -halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
-	vertices[1] = glm::vec4( -halfWidthExtentX+x,  halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
-	vertices[2] = glm::vec4(  halfWidthExtentX+x,  halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
-	vertices[3] = glm::vec4(  halfWidthExtentX+x, -halfWidthExtentY+y,  halfWidthExtentZ+z, 1.0 );
-	vertices[4] = glm::vec4( -halfWidthExtentX+x, -halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
-	vertices[5] = glm::vec4( -halfWidthExtentX+x,  halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
-	vertices[6] = glm::vec4(  halfWidthExtentX+x,  halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
-	vertices[7] = glm::vec4(  halfWidthExtentX+x, -halfWidthExtentY+y, -halfWidthExtentZ+z, 1.0 );
+	vertices[0] = glm::vec4( -halfWidthExtentX + centerX, -halfWidthExtentY + centerY,  halfWidthExtentZ + centerZ, 1.0 );
+	vertices[1] = glm::vec4( -halfWidthExtentX + centerX,  halfWidthExtentY + centerY,  halfWidthExtentZ + centerZ, 1.0 );
+	vertices[2] = glm::vec4(  halfWidthExtentX + centerX,  halfWidthExtentY + centerY,  halfWidthExtentZ + centerZ, 1.0 );
+	vertices[3] = glm::vec4(  halfWidthExtentX + centerX, -halfWidthExtentY + centerY,  halfWidthExtentZ + centerZ, 1.0 );
+	vertices[4] = glm::vec4( -halfWidthExtentX + centerX, -halfWidthExtentY + centerY, -halfWidthExtentZ + centerZ, 1.0 );
+	vertices[5] = glm::vec4( -halfWidthExtentX + centerX,  halfWidthExtentY + centerY, -halfWidthExtentZ + centerZ, 1.0 );
+	vertices[6] = glm::vec4(  halfWidthExtentX + centerX,  halfWidthExtentY + centerY, -halfWidthExtentZ + centerZ, 1.0 );
+	vertices[7] = glm::vec4(  halfWidthExtentX + centerX, -halfWidthExtentY + centerY, -halfWidthExtentZ + centerZ, 1.0 );
 
 	collider = new AABB(glm::vec3(x, y, z), halfWidthExtentX, halfWidthExtentY, halfWidthExtentZ);
 
