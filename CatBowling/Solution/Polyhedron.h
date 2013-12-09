@@ -17,15 +17,11 @@ struct PhysicsComponent
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
 
-	// TODO: implement forces and linear momentum
 	void addForce(GLfloat forceX, GLfloat forceY, GLfloat forceZ)
 	{
-		
-	}
-
-	glm::vec3 getMomentum()
-	{
-		return mass * velocity;
+		acceleration.x += forceX;
+		acceleration.y += forceY;
+		acceleration.z += forceZ;
 	}
 };
 
@@ -37,17 +33,28 @@ public:
 	const Polyhedron& operator=(const Polyhedron&);
 	virtual ~Polyhedron(void);
 
-	// Functions
+	// Graphics Functions
 	void init(GLuint);
 	void display();
 
+	// Getters
 	Collider* getCollider();
-	void setVelocity(float x, float y, float z);
 	glm::vec3 getVelocity();
 	glm::vec3 getCenter(){ return glm::vec3(centerX, centerY, centerZ); }
-	void eulerIntegrationUpdatePosition();
+
+	// Kinematics
+	void setVelocity(float x, float y, float z);
+	void setMass(float m){ physicsComponent.mass = m; }
+	void translate(float x, float y, float z);
+	void addForce(float x, float y, float z){ physicsComponent.addForce(x, y, z); }
+	
+	void setPosition(float x, float y, float z);
+	void rotate(float, glm::vec3);
+	
+	void eulerIntegrationUpdate();
 	void move(Polyhedron** polyhedronArray, int size);
 	void testCollision(Polyhedron*);
+	void resetPolyhedron();
 
 protected:
 	void doCopy(const Polyhedron&); // used for inherited copy constructors
@@ -116,6 +123,7 @@ private:
 	GLfloat randomNumberR, randomNumberG, randomNumberB, randomNumberA;
 	GLuint vColor;
 	float rotationAngle;
+	glm::vec3 rotationAxis;
 	//Use this if you want all of the polyhedron faces changing colors
 	void animateColorsOfFaces();
 

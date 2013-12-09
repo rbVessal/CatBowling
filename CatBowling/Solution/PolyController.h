@@ -1,4 +1,3 @@
-#pragma once
 #ifndef _PCONTROL_
 #define _PCONTROL_
 

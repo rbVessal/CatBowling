@@ -7,6 +7,7 @@
 Polyhedron::Polyhedron(void)
 {
 	rotationAngle = 0;
+	rotationAxis = glm::vec3(0, 0, 2);
 }
 
 Polyhedron::Polyhedron(const Polyhedron& other)
@@ -26,7 +27,8 @@ const Polyhedron& Polyhedron::operator=(const Polyhedron& other)
 
 void Polyhedron::doCopy(const Polyhedron& other)
 {
-	rotationAngle = 0;
+	rotationAngle = other.rotationAngle;
+	rotationAxis = other.rotationAxis;
 	centerX = other.centerX;
 	centerY = other.centerY;
 	centerZ = other.centerZ;
@@ -107,7 +109,7 @@ void Polyhedron::initValues()
 	zNear = 0.5, zFar = 3.0;
 
 	physicsComponent.velocity = glm::vec3(0.0, 0.0, 0.0);
-	physicsComponent.acceleration = glm::vec3(0.01, 0.01, 0.0);
+	physicsComponent.acceleration = glm::vec3(0.0, 0.0, 0.0);
 
 	//Initialize composite transformation matrix to indentity matrix
 	compositeModelTransformationMatrix = glm::mat4(1.0f);
@@ -180,12 +182,43 @@ void Polyhedron::drawTriangles(int indice0, int indice1, int indice2, int)
 	
 }*/
 
-//Update the position based on euler integration
+//Update velocity and position based on euler integration
 //see: http://physics2d.com/content/euler-integration
-void Polyhedron::eulerIntegrationUpdatePosition()
+void Polyhedron::eulerIntegrationUpdate()
 {
+	physicsComponent.velocity += physicsComponent.acceleration;
+
 	offsetX += physicsComponent.velocity.x;
 	offsetY += physicsComponent.velocity.y;
+	offsetZ += physicsComponent.velocity.z;
+}
+
+// Change the polyhedron's offset
+// (Used for non-continuous movement)
+void Polyhedron::translate(float x, float y, float z)
+{
+	offsetX += x;
+	offsetY += y;
+	offsetZ += z;
+}
+
+void Polyhedron::rotate(float angle, glm::vec3 axis)
+{
+	//Note: Angle should be expressed in radians if GLM_FORCE_RADIANS is defined
+	//otherwise use degrees
+	//x, y, and z should be normalized coordinates as each of them represents the axis
+	rotationAngle += angle;
+	rotationAxis = axis;
+}
+
+void Polyhedron::resetPolyhedron()
+{
+	setVelocity(0, 0, 0);
+	physicsComponent.acceleration = glm::vec3(0, 0, 0);
+	rotationAngle = 0;
+	offsetX = 0;
+	offsetY = 0;
+	offsetZ = 0;
 }
 
 void Polyhedron::move(Polyhedron** polyhedronArray, int size)
@@ -242,8 +275,8 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 
 		}
 	}
-	//Update the position using euler integration
-	eulerIntegrationUpdatePosition();
+	//Update the position and velocity using euler integration
+	eulerIntegrationUpdate();
 
 	//Update AABB
 	AABB* aabb = dynamic_cast<AABB*>(collider);
@@ -257,18 +290,48 @@ void Polyhedron::testCollision(Polyhedron* other)
 {
 	// Use any collider to get a vector that is reflected over the collision normal
 	glm::vec3 v1 = collider->collisionResponseVector(other->getCollider(), getVelocity());
-	glm::vec3 v2 = collider->collisionResponseVector(other->getCollider(), other->getVelocity());
+	glm::vec3 v2 = other->collider->collisionResponseVector(collider, other->getVelocity());
 
-	if(v1.x != physicsComponent.velocity.x)
+	// How to handle acceleration after a collision?
+	/*	if(v1.x != physicsComponent.velocity.x)
 		physicsComponent.acceleration.x *= -1;
 	if(v1.y != physicsComponent.velocity.y)
 		physicsComponent.acceleration.y *= -1;
 	if(v1.z != physicsComponent.velocity.z)
 		physicsComponent.acceleration.z *= -1;
-				
-	// Update this and other's velocities from the collision
-	this->setVelocity(v1.x, v1.y, v1.z);
-	other->setVelocity(v2.x, v2.y, v2.z);
+	*/
+
+	// If the velocities changed
+	if(v1 != getVelocity() || v2 != other->getVelocity())
+	{
+		// If mass of an object is large, assume it should never move
+		const float MAX_VELOCITY = 50;
+		if(physicsComponent.mass > MAX_VELOCITY || other->physicsComponent.mass > MAX_VELOCITY)
+		{
+			// Objects keep their own momentum that the colliders calculated
+			this->setVelocity(v1.x, v1.y, v1.z);
+			other->setVelocity(v2.x, v2.y, v2.z);
+		}
+		// Else, conserve momentum with a perfectly elastic collision
+		else
+		{
+			// Initial values
+			glm::vec3 u1 = getVelocity();
+			glm::vec3 u2 = other->getVelocity();
+			float m1 = physicsComponent.mass;
+			float m2 = other->physicsComponent.mass;
+
+			// v1 = ( m1-m2 / m1+m2 ) * u1 + ( 2 * m2 / m1 + m2 ) * u2
+			glm::vec3 v1final = ( m1-m2 / m1+m2 ) * u1 + ( 2 * m2 / m1 + m2 ) * u2;
+
+			// v2 = ( m2-m1 / m1+m2 ) * u2 + ( 2 * m1 / m1 + m2 ) * u1
+			glm::vec3 v2final = ( m2-m1 / m1+m2 ) * u2 + ( 2 * m1 / m1 + m2 ) * u1;
+
+			// Set velocities
+			this->setVelocity(v1final.x, v1final.y, v1final.z);
+			other->setVelocity(v2final.x, v2final.y, v2final.z);
+		}
+	}
 }
 
 /*void Polyhedron::changeColors()
@@ -293,7 +356,8 @@ void Polyhedron::animateColorsOfFaces()
 			newRandA = static_cast<float>(rand() % 100) / 100;
 			colors[i] = color4(newRandR, newRandG, newRandB, newRandA);
 		}
-		rotationAngle++;
+		// Constant rotation
+		//rotationAngle++;
 	}
 }
 
@@ -349,7 +413,7 @@ void Polyhedron::display( void )
 	//otherwise use degrees
 	//x, y, and z should be normalized coordinates as each of them represents
 	//the axis
-	compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 0.0f, 2.0f));
+	compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, rotationAxis);
 	//GLM matrices are already transposed, so we can pass in GL_FALSE
 	glUniformMatrix4fv( transformationMatrix, 1, GL_FALSE, glm::value_ptr(compositeModelTransformationMatrix));
 	
