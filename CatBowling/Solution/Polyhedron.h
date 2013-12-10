@@ -62,7 +62,7 @@ protected:
 	void doCopy(const Polyhedron&); // used for inherited copy constructors
 	GLfloat centerX, centerY, centerZ;
 	GLfloat halfWidthExtentX, halfWidthExtentY, halfWidthExtentZ;
-	glm::vec3 rotationAngleAxis;
+	
 	glm::mat4 rotationQuaternionMatrix;
 	GLfloat offsetX, offsetY, offsetZ;
 	int index;
@@ -127,7 +127,7 @@ private:
 	GLfloat randomNumberR, randomNumberG, randomNumberB, randomNumberA;
 	GLuint vColor;
 	float rotationAngle;
-	glm::vec3 rotationAxis;
+	glm::vec3 rotationAngleAxis;
 	//Use this if you want all of the polyhedron faces changing colors
 	void animateColorsOfFaces();
 

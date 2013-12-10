@@ -7,8 +7,6 @@
 Polyhedron::Polyhedron(void)
 {
 	rotationAngle = 0;
-	rotationAxis = glm::vec3(0, 0, 1);
-
 }
 
 Polyhedron::Polyhedron(const Polyhedron& other)
@@ -29,7 +27,6 @@ const Polyhedron& Polyhedron::operator=(const Polyhedron& other)
 void Polyhedron::doCopy(const Polyhedron& other)
 {
 	rotationAngle = other.rotationAngle;
-	rotationAxis = other.rotationAxis;
 	rotationQuaternionMatrix = other.rotationQuaternionMatrix;
 	centerX = other.centerX;
 	centerY = other.centerY;
@@ -215,9 +212,9 @@ void Polyhedron::rotate(float angle, glm::vec3 axis)
 	//otherwise use degrees
 	//x, y, and z should be normalized coordinates as each of them represents the axis
 	rotationAngle += angle;
-	GLfloat xAxis = 0;
-	GLfloat yAxis = 0;
-	GLfloat zAxis = 0;
+	GLfloat xAxis = 0.0f;
+	GLfloat yAxis = 0.0f;
+	GLfloat zAxis = 0.0f;
 	if(axis.x == 1)
 	{
 		xAxis = centerX + halfWidthExtentX;
@@ -435,12 +432,15 @@ void Polyhedron::display( void )
 	//Shearing example
 	//compositeModelTransformationMatrix = glm::shearX3D(compositeModelTransformationMatrix, 1.0f, 1.0f);
 	
+	//Matrix multiplication for OpenGL and GLSL happens in reverse order
+	//So call the model transformations in reverse order to achieve this
 	translateBackToCurrentPosition();
-	compositeModelTransformationMatrix = rotationQuaternionMatrix * compositeModelTransformationMatrix;
+	compositeModelTransformationMatrix = compositeModelTransformationMatrix * rotationQuaternionMatrix;
 	translateBackToOrigin();
 	
+	//Rotation using Euler angles
 	/*translateBackToCurrentPosition();
-	compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, rotationAxis);
+	compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 	translateBackToOrigin();*/
 
 	//GLM matrices are already transposed, so we can pass in GL_FALSE
