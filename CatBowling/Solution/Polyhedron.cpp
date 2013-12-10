@@ -388,11 +388,6 @@ void Polyhedron::animateColorsOfFaces()
 			newRandA = static_cast<float>(rand() % 100) / 100;
 			colors[i] = color4(newRandR, newRandG, newRandB, newRandA);
 		}
-		
-		rotationAngle += 10;
-
-		// Constant rotation
-		//rotationAngle++;
 
 	}
 }
