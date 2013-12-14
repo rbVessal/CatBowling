@@ -45,7 +45,8 @@ public:
 	glm::vec3 getCenter(){ return glm::vec3(centerX, centerY, centerZ); }
 
 	// Kinematics
-	void setVelocity(float x, float y, float z);
+	void setVelocity(float x, float y, float z);		// change velocity with world coordinate parameters
+	void setVelocityLocal(float x, float y, float z);	// change velocity with local coordinate parameters
 	void setMass(float m){ physicsComponent.mass = m; }
 	void translate(float x, float y, float z);
 	void addForce(float x, float y, float z){ physicsComponent.addForce(x, y, z); }

@@ -175,6 +175,12 @@ void Polyhedron::setVelocity(float x, float y, float z)
 	physicsComponent.velocity = glm::vec3(x, y, z);
 }
 
+void Polyhedron::setVelocityLocal(float x, float y, float z)
+{
+	glm::vec4 v = rotationQuaternionMatrix * glm::vec4(x, y, z, 1);
+	physicsComponent.velocity = glm::vec3(v.x, v.y, v.z);
+}
+
 /*
 void Polyhedron::draw()
 {
@@ -237,7 +243,6 @@ void Polyhedron::rotate(float angle, glm::vec3 axis)
 	//Convert the quarternion to a 4x4 matrix for the shader
 	rotationQuaternionMatrix = glm::mat4_cast(quaternion);
 	
-	
 }
 
 void Polyhedron::resetPolyhedron()
@@ -245,6 +250,7 @@ void Polyhedron::resetPolyhedron()
 	setVelocity(0, 0, 0);
 	physicsComponent.acceleration = glm::vec3(0, 0, 0);
 	rotationAngle = 0;
+	rotationQuaternionMatrix = glm::mat4(1.0f);
 	offsetX = 0;
 	offsetY = 0;
 	offsetZ = 0;
@@ -399,8 +405,10 @@ void Polyhedron::translateBackToOrigin()
 {
 	//Translate back the points using the center
 	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-centerX, -centerY, -centerZ));
+
+	// NOTE: this was causing the translation issues. Not sure why.
 	//Then translate back using the total offset/velocity
-	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-offsetX, -offsetY, -offsetZ));
+	//compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-offsetX, -offsetY, -offsetZ));
 }
 void Polyhedron::translateBackToCurrentPosition()
 {

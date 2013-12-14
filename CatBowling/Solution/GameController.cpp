@@ -62,8 +62,8 @@ void GameController::processInput(unsigned char key)
 		switch(key) 
 		{
 			// React to keyboard event
-			case 'f': adjustRotation(-1); break;
-			case 'd': adjustRotation(1); break;
+			case 'f': adjustRotation(1); break;
+			case 'd': adjustRotation(-1); break;
 
 			case 'j': adjustStrafing(-0.05); break;
 			case 'k': adjustStrafing(0.05); break;
@@ -85,6 +85,6 @@ void GameController::adjustStrafing(float degree)
 
 void GameController::launchBall()
 {
-	ball->setVelocity(0, 0, -0.01);
+	ball->setVelocityLocal(0, 0, -0.01);
 	gameState = ROLLING;
 }
