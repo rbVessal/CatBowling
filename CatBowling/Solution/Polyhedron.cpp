@@ -109,7 +109,7 @@ void Polyhedron::initValues()
 
 	left = -1.0, right = 1.0;
 	bottom = -1.0, top = 1.0;
-	zNear = 0.5, zFar = 3.0;
+	zNear = 0.4, zFar = 3.0;
 
 	physicsComponent.velocity = glm::vec3(0.0, 0.0, 0.0);
 	physicsComponent.acceleration = glm::vec3(0.0, 0.0, 0.0);
@@ -460,8 +460,9 @@ void Polyhedron::display( void )
 		 radius*sin(theta)*sin(phi),
 		 radius*cos(theta), 
 		 1.0f);
-    vec4  at( 0.0f, 0.0f, 0.0f, 1.0f);
-    vec4    up( 0.0f, 1.0f, 0.0f, 0.0f);
+    //vec4  at( 0.0f, 0.0f, 0.0f, 1.0f);
+    vec4  at( 0.0f, -1.0f, 0.0f, 1.0f);
+	vec4    up( 0.0f, 1.0f, 0.0f, 0.0f);
 
 	mat4 mv = LookAt(eye, at, up);
 	glUniformMatrix4fv( view, 1, GL_TRUE, mv);

@@ -52,6 +52,9 @@ void GameController::update()
 	{
 		// Gravity
 		ball->addForce(0, -0.00001, 0);
+
+		// Rolling
+		ball->rotate(-5, glm::vec3(1, 0, 0));
 	}
 }
 

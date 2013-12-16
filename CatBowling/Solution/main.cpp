@@ -118,11 +118,11 @@ void init()
 	// Game
 	sizeOfGamePolys = 5;
 	gamePolys = new Polyhedron*[sizeOfGamePolys];
-	gamePolys[0] = new Cube(0.0, -3.25, -4.0, 2.0, 0.1, 6.0, false); // bowling lane
-	gamePolys[1] = new Cube(0.0, -1.0, 0.25, 0.5, 0.5, 0.5, false); // the "ball" (a cube for now)
-	gamePolys[2] = new Tetrahedron(0.0, -2.0, -4.5); // pins
-	gamePolys[3] = new Tetrahedron(1.5, -2.0, -4.5);
-	gamePolys[4] = new Tetrahedron(-1.5, -2.0, -4.5);
+	gamePolys[0] = new Cube(0.0, -2.75, -3.25, 2.0, 0.1, 8.0, false); // bowling lane
+	gamePolys[1] = new Octahedron(0.0, -1.25, 1.25, 0.75, 0.75, 0.75); // the "ball" (a cube for now)
+	gamePolys[2] = new Tetrahedron(0.0, -2.0, -3.5); // pins
+	gamePolys[3] = new Tetrahedron(1.5, -2.0, -3.5);
+	gamePolys[4] = new Tetrahedron(-1.5, -2.0, -3.5);
 
 	// Set the mass of heavier objects
 	gamePolys[0]->setMass(99);
