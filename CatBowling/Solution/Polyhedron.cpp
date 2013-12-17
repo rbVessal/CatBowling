@@ -159,6 +159,11 @@ void Polyhedron::setupVBO()
     glBufferSubData( GL_ARRAY_BUFFER, NumVertices * sizeof(glm::vec4), NumVertices * sizeof(color4), colors );
 }
 
+glm::vec3 Polyhedron::getCenter()
+{
+	return glm::vec3(centerX, centerY, centerZ);
+}
+
 // Setters and Getters
 Collider* Polyhedron::getCollider()
 {

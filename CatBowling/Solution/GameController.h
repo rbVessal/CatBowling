@@ -2,6 +2,7 @@
 #define _GCONTROL_
 
 #include "Polyhedron.h"
+#include "TrajectoryCurve.h"
 
 #define TURN_BEGIN 0	// beginning of turn where user input is collected
 #define ROLLING	1		// ball rolling down the lane
@@ -19,17 +20,23 @@ class GameController
 {
 public:
 	GameController(void);
-	GameController(Polyhedron*, Polyhedron**);
+	GameController(Polyhedron*, Polyhedron**, TrajectoryCurve* trajectoryCurve);
 	~GameController(void);
 
 	// Standard game functions
 	void start();
 	void update();
+	void display();
 
 	// Input
 	void processInput(unsigned char);
 
+	int getGameState();
+
+	TrajectoryCurve* trajectoryCurve;
+
 private:
+	bool renderTrajectoryCurve;
 	Polyhedron* ball;
 	Polyhedron* pins[10];
 	
@@ -42,5 +49,6 @@ private:
 	void adjustRotation(float);
 	void adjustStrafing(float);
 	void launchBall();
+	
 };
 #endif

@@ -82,6 +82,24 @@
     <ClInclude Include="GameController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TrajectoryCurve.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MathFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BezierSurface.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="BezierCurve.h">
+      <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="BezierSurfaceController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InitShader.cpp">
@@ -115,6 +133,18 @@
       <Filter>Source Files\Collision Detection</Filter>
     </ClCompile>
     <ClCompile Include="GameController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TrajectoryCurve.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="BezierSurface.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="BezierCurve.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="BezierSurfaceController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

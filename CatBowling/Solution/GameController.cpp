@@ -1,11 +1,14 @@
 #include "GameController.h"
 
+#define NUMBER_OF_PINS 10
 
 GameController::GameController(void)
 {
 	gameState = INACTIVE;
 	gameScore = 0;
 	ball =  NULL;
+	renderTrajectoryCurve = true;
+
 
 	for(int i=0; i<10; i++)
 	{
@@ -13,8 +16,9 @@ GameController::GameController(void)
 	}
 }
 
-GameController::GameController(Polyhedron* ballPoly, Polyhedron** pinArray)
+GameController::GameController(Polyhedron* ballPoly, Polyhedron** pinArray, TrajectoryCurve* trajectoryCurve)
 {
+	this->trajectoryCurve = trajectoryCurve;
 	gameState = INACTIVE;
 	gameScore = 0;
 	ball =  ballPoly;
@@ -23,14 +27,14 @@ GameController::GameController(Polyhedron* ballPoly, Polyhedron** pinArray)
 	// Because this game isn't going to be right otherwise.
 	if(pinArray != NULL)
 	{
-		for(int i=0; i<10; i++)
+		for(int i=0; i<NUMBER_OF_PINS; i++)
 		{
 			pins[i] = pinArray[i];
 		}
 	}
 	else
 	{
-		for(int i=0; i<10; i++)
+		for(int i=0; i<NUMBER_OF_PINS; i++)
 		{
 			pins[i] = NULL;
 		}
@@ -39,11 +43,22 @@ GameController::GameController(Polyhedron* ballPoly, Polyhedron** pinArray)
 
 GameController::~GameController(void)
 {
+	delete trajectoryCurve;
 }
 
 void GameController::start()
 {
 	gameState = TURN_BEGIN;
+}
+
+int GameController::getGameState()
+{
+	return gameState;
+}
+
+void GameController::display()
+{
+	trajectoryCurve->display();
 }
 
 void GameController::update()
@@ -73,6 +88,7 @@ void GameController::processInput(unsigned char key)
 	}
 }
 
+//Adjust the rotation of the ball using a quaternion
 void GameController::adjustRotation(float degree)
 {
 	ball->rotate(degree, glm::vec3(0, 1, 0));

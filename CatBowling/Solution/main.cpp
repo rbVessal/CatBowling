@@ -2,11 +2,13 @@
 // Final Project - Cat Bowling
 // Rebecca Vessal and Jennifer Stanton
 
+#include "TrajectoryCurve.h"
 #include "Cube.h"
 #include "Tetrahedron.h"
 #include "Octahedron.h"
 #include "PolyController.h"
 #include "GameController.h"
+#include "BezierSurfaceController.h"
 #include "Octree.h"
 #include <time.h>
 #include "vld.h"
@@ -35,6 +37,7 @@ PolyController* menu;
 PolyController* game;
 
 static GameController* gameController;
+static BezierSurfaceController* bezierSurfaceController;
 
 Octree* octree;
 
@@ -124,6 +127,15 @@ void init()
 	gamePolys[3] = new Tetrahedron(1.5, -2.0, -4.5);
 	gamePolys[4] = new Tetrahedron(-1.5, -2.0, -4.5);
 
+	//Create the trajectory curve for the game controller
+	//beginning point - ball's center point
+	//center point - mid point between ball and 1st pin (most front)
+	//end point - pin's center point
+	TrajectoryCurve* trajectoryCurve = new TrajectoryCurve(glm::vec3(gamePolys[1]->getCenter().x, gamePolys[1]->getCenter().y, gamePolys[1]->getCenter().z), 
+		glm::vec3(gamePolys[1]->getCenter().x - gamePolys[2]->getCenter().x, gamePolys[1]->getCenter().y - gamePolys[2]->getCenter().y, gamePolys[1]->getCenter().z - gamePolys[2]->getCenter().z), 
+		glm::vec3(gamePolys[2]->getCenter().x, gamePolys[2]->getCenter().y, gamePolys[2]->getCenter().z));
+	trajectoryCurve->init(program);
+
 	// Set the mass of heavier objects
 	gamePolys[0]->setMass(99);
 
@@ -145,8 +157,10 @@ void init()
 	menu->init(program);
 
 	// GameController
-	gameController = new GameController(gamePolys[1], NULL);
+	gameController = new GameController(gamePolys[1], NULL, trajectoryCurve);
 	gameController->start();
+
+	bezierSurfaceController = new BezierSurfaceController(trajectoryCurve, program);
 
 	// Octree
 	octree = new Octree();
@@ -187,11 +201,13 @@ void display( void )
 	// Render either the Menu polys or the Game polys
 	if(screenState==MENU)
 	{
-		menu->display();
+		//Render the bezier surface
+		bezierSurfaceController->display();
 	}
 	else if(screenState==GAME || screenState==GAME_PAUSE)
 	{
 		game->display();
+		
 	}
 	else if(screenState==TESTSTATE)
 	{
@@ -218,7 +234,10 @@ void keyboard( unsigned char key, int x, int y )
 	{
 		// Start
 		case ' ':
-			if(screenState==MENU){screenState=GAME;}
+			if(screenState==MENU)
+			{
+				screenState=GAME;
+			}
 			break;
 		// Pause
 		case 'p':
@@ -271,13 +290,6 @@ void idle()
 		{
 			Polyhedron* polyhedron = gamePolys[i];
 			polyhedron->move(gamePolys, sizeOfGamePolys);
-		}
-	}
-	else if(screenState == MENU)
-	{
-		for(int i = 0; i < sizeOfMenuPolys; i++)
-		{
-			menuPolys[i]->move(menuPolys, sizeOfMenuPolys);
 		}
 	}
 	else if(screenState == TESTSTATE)
@@ -337,6 +349,7 @@ int main( int argc, char **argv )
 	delete game;
 	delete menu;
 	delete gameController;
+	delete bezierSurfaceController;
 	delete octree;
 	
 #ifdef TEST_MODE
