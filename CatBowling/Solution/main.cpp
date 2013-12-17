@@ -2,6 +2,7 @@
 // Final Project - Cat Bowling
 // Rebecca Vessal and Jennifer Stanton
 
+#include "Line.h"
 #include "Cube.h"
 #include "Tetrahedron.h"
 #include "Octahedron.h"
@@ -114,29 +115,48 @@ void init()
 #ifdef TEST_MODE
 	initTestState();
 #endif
+	// Positioning values
+	float pinHeight = -1.75;
 
 	// Game
-	sizeOfGamePolys = 5;
+	sizeOfGamePolys = 13;
 	gamePolys = new Polyhedron*[sizeOfGamePolys];
 	gamePolys[0] = new Cube(0.0, -2.75, -3.25, 2.0, 0.1, 8.0, false); // bowling lane
 	gamePolys[1] = new Octahedron(0.0, -1.25, 1.25, 0.75, 0.75, 0.75); // the "ball" (a cube for now)
-	gamePolys[2] = new Tetrahedron(0.0, -2.0, -3.5); // pins
-	gamePolys[3] = new Tetrahedron(1.5, -2.0, -3.5);
-	gamePolys[4] = new Tetrahedron(-1.5, -2.0, -3.5);
-
-	// Set the mass of heavier objects
-	gamePolys[0]->setMass(99);
+	// Back row of pins (4)
+	gamePolys[2] = new Tetrahedron(1.0, pinHeight, -4.5);
+	gamePolys[3] = new Tetrahedron(-1.0, pinHeight, -4.5);
+	gamePolys[4] = new Tetrahedron(2.0, pinHeight, -4.5);
+	gamePolys[5] = new Tetrahedron(-2.0, pinHeight, -4.5);
+	// Middle row (3)
+	gamePolys[6] = new Tetrahedron(0.0, pinHeight, -3.5);
+	gamePolys[7] = new Tetrahedron(1.5, pinHeight, -3.5);
+	gamePolys[8] = new Tetrahedron(-1.5, pinHeight, -3.5);
+	// 2nd row (2)
+	gamePolys[9] = new Tetrahedron(1.0, pinHeight, -2.5);
+	gamePolys[10] = new Tetrahedron(-1.0, pinHeight, -2.5);
+	// Front row (1)
+	gamePolys[11] = new Tetrahedron(0.0, pinHeight, -1.5);
+	// Back wall
+	gamePolys[12] = new Line(glm::vec3(5, pinHeight, -5), glm::vec3(-5, pinHeight, -5));
 
 	// Set the mass of the pins
-	for(int i=1; i<sizeOfGamePolys; i++)
+	for(int i=2; i<sizeOfGamePolys; i++)
 	{
 		gamePolys[i]->setMass(1);
 	}
 
+	// Set the mass of heavier objects
+	gamePolys[0]->setMass(99); // lane
+	gamePolys[12]->setMass(99); // back wall
+
+	// Set the mass of the ball
+	gamePolys[1]->setMass(1.25);
+
 	// Menu
 	sizeOfMenuPolys = 1;
 	menuPolys = new Polyhedron*[sizeOfMenuPolys];
-	menuPolys[0] = new Cube(); // testing menu
+	menuPolys[0] = new Cube();
 	
 	// PolyControllers
 	game = new PolyController(gamePolys, sizeOfGamePolys);
@@ -145,7 +165,7 @@ void init()
 	menu->init(program);
 
 	// GameController
-	gameController = new GameController(gamePolys[1], NULL);
+	gameController = new GameController(gamePolys[1], &(gamePolys[2]) );
 	gameController->start();
 
 	// Octree

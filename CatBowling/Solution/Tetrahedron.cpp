@@ -29,7 +29,7 @@ void Tetrahedron::initTetrahedron(GLfloat x, GLfloat y, GLfloat z)
 	vertices[2] = glm::vec4(  0.0 + centerX,  halfWidthExtentY + centerY,  0.0 + centerZ, 1.0 );//top
 	vertices[3] = glm::vec4(  0.0 + centerX, -halfWidthExtentY + centerY,  halfWidthExtentZ + centerZ, 1.0 );//back
 
-	collider = new AABB(glm::vec3(x, y, z), 0.5, 0.75, 0.75);
+	collider = new AABB(glm::vec3(x, y, z), halfWidthExtentX * 0.5, halfWidthExtentY, halfWidthExtentZ * 0.5);
 
 	initValues();
 }

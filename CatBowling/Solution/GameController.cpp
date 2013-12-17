@@ -55,6 +55,9 @@ void GameController::update()
 
 		// Rolling
 		ball->rotate(-5, glm::vec3(1, 0, 0));
+
+		// Point to line collision to test if ball has reached the end yet
+
 	}
 }
 
@@ -88,6 +91,6 @@ void GameController::adjustStrafing(float degree)
 
 void GameController::launchBall()
 {
-	ball->setVelocityLocal(0, 0, -0.01);
+	ball->setVelocityLocal(0, 0, -0.05);
 	gameState = ROLLING;
 }
