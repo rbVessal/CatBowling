@@ -9,7 +9,7 @@ BezierSurfaceController::BezierSurfaceController(void)
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
 	//Create the curves and surfaces for the bezier surface
-	createCurves(curves);
+	//createCurves(curves);
 	createSurfaces(surfaces);
 }
 
@@ -23,7 +23,7 @@ BezierSurfaceController::BezierSurfaceController(TrajectoryCurve* trajectoryCurv
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
 	//Create the curves and surfaces for the bezier surface
-	createCurves(curves);
+	//createCurves(curves);
 	createSurfaces(surfaces);
 	//glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 }
@@ -70,14 +70,16 @@ void BezierSurfaceController::removeCurves( std::vector<BezierCurve *>& curves )
 #pragma region Create Surfaces
 void BezierSurfaceController::createSurfaces( std::vector<BezierSurface *>& surfaces )
 {
+	//Horziontal
 	std::vector<glm::vec4> control1Points;
-	control1Points.push_back( glm::vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+	control1Points.push_back( glm::vec4( -2.0f, -2.0f, 0.0f, 1.0f ) );
 	control1Points.push_back( glm::vec4( 3.0f, 0.0f, 1.0f, 1.0f ) );
 	control1Points.push_back( glm::vec4( 6.0f, 1.0f, 0.0f, 1.0f ) );
 	control1Points.push_back( glm::vec4( 10.0f, 0.0f, 0.0f, 1.0f ) );
 
+	//Vertical
 	std::vector<glm::vec4> control2Points;
-	control2Points.push_back( glm::vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+	control2Points.push_back( glm::vec4( -2.0f, -2.0f, 0.0f, 1.0f ) );
 	control2Points.push_back( glm::vec4( 1.0f, 3.0f, 0.0f, 1.0f ) );
 	control2Points.push_back( glm::vec4( 0.0f, 6.0f, 1.0f, 1.0f ) );
 	control2Points.push_back( glm::vec4( 0.0f, 10.0f, 0.0f, 1.0f ) );
@@ -109,20 +111,20 @@ void BezierSurfaceController::display()
 {
 	//Render the bezier surfaces and curves	
 	//Code taken from Matt's Bezier Surface example
-	curves[0]->createPoints();
-	curves[1]->createPoints();
+	//curves[0]->createPoints();
+	//curves[1]->createPoints();
 	surfaces[0]->createPoints();
 	trajectoryCurve->display();
 	
 #pragma region Curves
-	if( curvesDisplay )
+	/*if( curvesDisplay )
 	{
 		int curvesLength = curves.size();
 		for( int i = 0; i < curvesLength; ++i )
 		{
 			curves[i]->display();
 		}
-	}
+	}*/
 #pragma endregion
 
 #pragma region Surface
@@ -140,6 +142,6 @@ void BezierSurfaceController::display()
 
 BezierSurfaceController::~BezierSurfaceController(void)
 {
-	removeCurves(curves);
+	//removeCurves(curves);
 	removeSurfaces(surfaces);
 }

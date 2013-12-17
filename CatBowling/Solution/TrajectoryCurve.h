@@ -24,9 +24,9 @@ public:
 	//Call this to keep redrawing the bezier curve
 	void display();
 	
-
 	~TrajectoryCurve(void);
 private:
+	bool isDisplayed;
 	glm::vec3 beginningPoint;//static control point
 	glm::vec3 centerPoint;//control point you manipulate with mouse
 	glm::vec3 endPoint;//static control point

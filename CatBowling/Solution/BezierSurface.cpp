@@ -288,7 +288,7 @@ void BezierSurface::display()
 	//glDisableVertexAttribArray( vColor );
 #pragma endregion
 	
-	if( debugVisible )
+	/*if( debugVisible )
 	{
 #pragma region Render Control  Lines (1)
 	glBindBuffer( GL_ARRAY_BUFFER, _controlVertexbuffer1 );
@@ -379,7 +379,7 @@ void BezierSurface::display()
 	//glDisableVertexAttribArray( vPosition );
 	//glDisableVertexAttribArray( vColor );
 #pragma endregion
-	}
+	}*/
 }
 #pragma endregion
 

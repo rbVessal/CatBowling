@@ -26,6 +26,7 @@ TrajectoryCurve::TrajectoryCurve(glm::vec3 beginningPoint, glm::vec3 centerPoint
 	zNear = 0.5, zFar = 3.0;
 
 	compositeModelTransformationMatrix = glm::mat4(1.0f);
+	isDisplayed = false;
 }
 
 void TrajectoryCurve::init(GLuint program)
@@ -115,7 +116,10 @@ void TrajectoryCurve::display()
 	glUniformMatrix4fv( projection, 1, GL_TRUE, perspectiveProjection);	
 
 	//Draw that bezier curve!
-	glDrawArrays( GL_LINE_STRIP, 0, NUMBER_OF_POINTS );
+	if(isDisplayed)
+	{
+		glDrawArrays( GL_LINE_STRIP, 0, NUMBER_OF_POINTS );
+	}
 }
 
 //Default constructor
