@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{731A1C76-22E3-4E12-B8C0-8F982628FDA2}</ProjectGuid>
+    <RootNamespace>Solution</RootNamespace>
+    <ProjectName>SolutionCPP</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)Z_DELETE\</OutDir>
+    <IntDir>$(SolutionDir)Z_DELETE\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_d</TargetName>
+    <ExecutablePath>$(SolutionDir)include\Visual Leak Detector\bin;$(SolutionDir)include\GL\x86\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)include\Visual Leak Detector\include;$(SolutionDir)include\GL\x86\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)include\GL\x86\lib;$(SolutionDir)include\Visual Leak Detector\lib\Win32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Z_DELETE\</OutDir>
+    <IntDir>$(SolutionDir)Z_DELETE\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <ExecutablePath>$(SolutionDir)include\GL\x86\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)include\GL\x86\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)include\GL\x86\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\x86\include\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>mkdir “$(SolutionDir)_Binary\”
+mkdir “$(SolutionDir)_Binary\Shaders\”
+copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”
+xcopy "$(SolutionDir)include\GL\x86\bin" "$(SolutionDir)_Binary" /y
+xcopy "$(SolutionDir)$(SolutionName)\Shaders" "$(SolutionDir)_Binary\Shaders" /y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying binary…</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\x86\include\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>mkdir “$(SolutionDir)_Binary\”
+mkdir “$(SolutionDir)_Binary\Shaders\”
+copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”
+xcopy "$(SolutionDir)include\GL\x86\bin" "$(SolutionDir)_Binary" /y
+xcopy "$(SolutionDir)$(SolutionName)\Shaders" "$(SolutionDir)_Binary\Shaders" /y</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying binary…</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\res\ICON.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\fshader.glsl" />
+    <None Include="Shaders\vshader.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AABB.h" />
+    <ClInclude Include="Angel.h" />
+    <ClInclude Include="BezierCurve.h" />
+    <ClInclude Include="BezierSurface.h" />
+    <ClInclude Include="BezierSurfaceController.h" />
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="MathFunctions.h" />
+    <ClInclude Include="TrajectoryCurve.h" />
+    <ClInclude Include="BoxShape.h" />
+    <ClInclude Include="CheckError.h" />
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="GameController.h" />
+    <ClInclude Include="Line.h" />
+    <ClInclude Include="LineSegment.h" />
+    <ClInclude Include="mat.h" />
+    <ClInclude Include="Octahedron.h" />
+    <ClInclude Include="Octree.h" />
+    <ClInclude Include="PolyController.h" />
+    <ClInclude Include="Polyhedron.h" />
+    <ClInclude Include="Tetrahedron.h" />
+    <ClInclude Include="vec.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="BezierCurve.cpp" />
+    <ClCompile Include="BezierSurface.cpp" />
+    <ClCompile Include="BezierSurfaceController.cpp" />
+    <ClCompile Include="TrajectoryCurve.cpp" />
+    <ClCompile Include="BoxShape.cpp" />
+    <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="GameController.cpp" />
+    <ClCompile Include="InitShader.cpp" />
+    <ClCompile Include="Line.cpp" />
+    <ClCompile Include="LineSegment.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Octahedron.cpp" />
+    <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="PolyController.cpp" />
+    <ClCompile Include="Polyhedron.cpp" />
+    <ClCompile Include="Tetrahedron.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
