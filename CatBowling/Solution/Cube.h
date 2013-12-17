@@ -1,9 +1,9 @@
 #ifndef A5__CUBE
 #define A5__CUBE
 
-#include "Polyhedron.h"
+#include "BoxShape.h"
 
-class Cube : public Polyhedron
+class Cube : public BoxShape
 {
 public:
 	Cube(void); // Cube at origin
@@ -11,12 +11,7 @@ public:
 	Cube(const Cube&);
 	const Cube& operator=(const Cube&);
 	~Cube(void);
-
-	// Functions
-	void draw();
-	void drawTriangles(int, int, int, int);
 private:
 	void initCube(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
-	bool isWall;
 };
 #endif

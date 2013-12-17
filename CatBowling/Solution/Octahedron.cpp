@@ -2,11 +2,10 @@
 
 Octahedron::Octahedron(void)
 {
-	initOctahedron(0, 0, 0);
+	initOctahedron(0, 0, 0, 0.5, 0.5, 0.5);
 }
 
-
-void Octahedron::initOctahedron(GLfloat x, GLfloat y, GLfloat z)
+void Octahedron::initOctahedron(GLfloat x, GLfloat y, GLfloat z, GLfloat halfX, GLfloat halfY, GLfloat halfZ)
 {
 	this->centerX = x;
 	this->centerY = y;
@@ -19,9 +18,10 @@ void Octahedron::initOctahedron(GLfloat x, GLfloat y, GLfloat z)
 	vertices = new glm::vec4[6];
 	points = new glm::vec4[NumVertices];
 	colors = new glm::vec4[NumVertices];
-	this->halfWidthExtentX = 0.5;
-	this->halfWidthExtentY = 0.5;
-	this->halfWidthExtentZ = 0.5;
+
+	this->halfWidthExtentX = halfX;
+	this->halfWidthExtentY = halfY;
+	this->halfWidthExtentZ = halfZ;
 
 	// Vertices of a unit Octahedron centered at origin, sides aligned with axes
 	vertices[0] = glm::vec4(  0.0 + centerX,  halfWidthExtentY + centerY,  0.0 + centerZ, 1.0 );//top
@@ -38,7 +38,12 @@ void Octahedron::initOctahedron(GLfloat x, GLfloat y, GLfloat z)
 
 Octahedron::Octahedron(GLfloat x, GLfloat y, GLfloat z)
 {
-	initOctahedron(x, y, z);
+	initOctahedron(x, y, z, 0.5, 0.5, 0.5);
+}
+
+Octahedron::Octahedron(GLfloat x, GLfloat y, GLfloat z, GLfloat halfX, GLfloat halfY, GLfloat halfZ)
+{
+	initOctahedron(x, y, z, halfX, halfY, halfZ);
 }
 
 Octahedron::Octahedron(const Octahedron& other)

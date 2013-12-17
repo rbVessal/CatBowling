@@ -45,12 +45,13 @@ public:
 	glm::vec3 getCenter();
 
 	// Kinematics
-	void setVelocity(float x, float y, float z);
+	void setVelocity(float x, float y, float z);		// change velocity with world coordinate parameters
+	void setVelocityLocal(float x, float y, float z);	// change velocity with local coordinate parameters
 	void setMass(float m){ physicsComponent.mass = m; }
 	void translate(float x, float y, float z);
 	void addForce(float x, float y, float z){ physicsComponent.addForce(x, y, z); }
 	
-	void setPosition(float x, float y, float z);
+	void setPosition(float x, float y, float z){offsetX = x; offsetY = y; offsetZ = z;}
 	void rotate(float, glm::vec3);
 	
 	void eulerIntegrationUpdate();

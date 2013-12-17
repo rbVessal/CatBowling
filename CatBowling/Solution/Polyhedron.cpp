@@ -109,7 +109,7 @@ void Polyhedron::initValues()
 
 	left = -1.0, right = 1.0;
 	bottom = -1.0, top = 1.0;
-	zNear = 0.5, zFar = 3.0;
+	zNear = 0.4, zFar = 3.0;
 
 	physicsComponent.velocity = glm::vec3(0.0, 0.0, 0.0);
 	physicsComponent.acceleration = glm::vec3(0.0, 0.0, 0.0);
@@ -180,6 +180,12 @@ void Polyhedron::setVelocity(float x, float y, float z)
 	physicsComponent.velocity = glm::vec3(x, y, z);
 }
 
+void Polyhedron::setVelocityLocal(float x, float y, float z)
+{
+	glm::vec4 v = rotationQuaternionMatrix * glm::vec4(x, y, z, 1);
+	physicsComponent.velocity = glm::vec3(v.x, v.y, v.z);
+}
+
 /*
 void Polyhedron::draw()
 {
@@ -242,7 +248,6 @@ void Polyhedron::rotate(float angle, glm::vec3 axis)
 	//Convert the quarternion to a 4x4 matrix for the shader
 	rotationQuaternionMatrix = glm::mat4_cast(quaternion);
 	
-	
 }
 
 void Polyhedron::resetPolyhedron()
@@ -250,67 +255,32 @@ void Polyhedron::resetPolyhedron()
 	setVelocity(0, 0, 0);
 	physicsComponent.acceleration = glm::vec3(0, 0, 0);
 	rotationAngle = 0;
+	rotationQuaternionMatrix = glm::mat4(1.0f);
 	offsetX = 0;
 	offsetY = 0;
 	offsetZ = 0;
 }
 
 void Polyhedron::move(Polyhedron** polyhedronArray, int size)
-{
-	for(int i = 0; i < size; i++)
-	{
-		Polyhedron* other = polyhedronArray[i];
+{	
+	// Apply Friction
+	physicsComponent.velocity *= 0.99;
 
-		// Collision response
-		if(this != other)
-		{
-			// METHOD 1:
-			//Check to see if the polyhedrons collided using AABB
-			/*AABB* aabb = dynamic_cast<AABB*>(collider);
-			AABB* aabb_other = dynamic_cast<AABB*>(other->getCollider());
-			if(aabb && aabb_other)
-			{
-				bool isCollided = aabb->checkAABB(aabb_other);
-				
-				//If collided then set the velocity to its inverse
-				if(isCollided)
-				{
-					this->setVelocity(-1 * (this->getVelocity().x), -1 * (this->getVelocity().y),  -1 * (this->getVelocity().z));
-					physicsComponent.acceleration.x *= -1;
-					physicsComponent.acceleration.y *= -1;
-				}
-			}*/
-			
-			// - - - - - - - - 
-
-			// Method 2:
-			// Use any collider to get a vector that is reflected over the collision normal
-			//glm::vec3 v1 = collider->collisionResponseVector(other->getCollider(), getVelocity());
-			//glm::vec3 v2 = collider->collisionResponseVector(other->getCollider(), other->getVelocity());
-
-			/*
-			if(v1.x != physicsComponent.velocity.x)
-				physicsComponent.acceleration.x *= -1;
-			if(v1.y != physicsComponent.velocity.y)
-				physicsComponent.acceleration.y *= -1;
-			if(v1.z != physicsComponent.velocity.z)
-				physicsComponent.acceleration.z *= -1;
-				*/
-				
-			// Update this and other's velocities from the collision
-			//this->setVelocity(v1.x, v1.y, v1.z);
-			//other->setVelocity(v2.x, v2.y, v2.z);
-
-			// - - - - - - - - - - -
-
-			// Method 3:
-			// Use the octree. See testCollision()
-			// ...
-
-		}
-	}
 	//Update the position and velocity using euler integration
 	eulerIntegrationUpdate();
+
+	// Check for tunneling
+	for(int i=0; i<size; i++)
+	{
+		if(polyhedronArray[i] != this)
+		{
+			if( collider->checkCollision(polyhedronArray[i]->getCollider()) )
+			{
+				// Tunneling happened; use swept collision response to fix object
+				//std::cout<< "tunneling happened" << std::endl;
+			}
+		}
+	}
 
 	//Update AABB
 	AABB* aabb = dynamic_cast<AABB*>(collider);
@@ -322,31 +292,42 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 
 void Polyhedron::testCollision(Polyhedron* other)
 {
+	const float MAX_MASS = 50;
+	
 	// Use any collider to get a vector that is reflected over the collision normal
 	glm::vec3 v1 = collider->collisionResponseVector(other->getCollider(), getVelocity());
 	glm::vec3 v2 = other->collider->collisionResponseVector(collider, other->getVelocity());
 
 	// How to handle acceleration after a collision?
-	/*	if(v1.x != physicsComponent.velocity.x)
+	/*if(v1.x != physicsComponent.velocity.x)
 		physicsComponent.acceleration.x *= -1;
 	if(v1.y != physicsComponent.velocity.y)
 		physicsComponent.acceleration.y *= -1;
 	if(v1.z != physicsComponent.velocity.z)
-		physicsComponent.acceleration.z *= -1;
-	*/
+		physicsComponent.acceleration.z *= -1;*/
 
 	// If the velocities changed
 	if(v1 != getVelocity() || v2 != other->getVelocity())
 	{
 		// If mass of an object is large, assume it should never move
-		const float MAX_VELOCITY = 50;
-		if(physicsComponent.mass > MAX_VELOCITY || other->physicsComponent.mass > MAX_VELOCITY)
+		
+		if(physicsComponent.mass > MAX_MASS || other->physicsComponent.mass > MAX_MASS)
 		{
 			// Objects keep their own momentum that the colliders calculated
 			this->setVelocity(v1.x, v1.y, v1.z);
 			other->setVelocity(v2.x, v2.y, v2.z);
+
+			// Get rid of acceleration
+			if(v1 != physicsComponent.velocity)
+			{
+				//this->physicsComponent.acceleration = glm::vec3(0, 0, 0);
+			}
+			if(v2 != other->physicsComponent.velocity)
+			{
+				//other->physicsComponent.acceleration = glm::vec3(0, 0, 0);
+			}
 		}
-		// Else, conserve momentum with a perfectly elastic collision
+		// Else, conserve momentum with an elastic collision
 		else
 		{
 			// Initial values
@@ -361,9 +342,34 @@ void Polyhedron::testCollision(Polyhedron* other)
 			// v2 = ( m2-m1 / m1+m2 ) * u2 + ( 2 * m1 / m1 + m2 ) * u1
 			glm::vec3 v2final = ( m2-m1 / m1+m2 ) * u2 + ( 2 * m1 / m1 + m2 ) * u1;
 
+			// Fix stupid math
+			if(m1 == m2)
+			{
+				v1final = ( 2 * m2 / m1 + m2 ) * u2;
+				v2final = ( 2 * m1 / m1 + m2 ) * u1;
+			}
+
+			int max = 3;
+			if(v1final.x > max || v2final.x > max || v1final.y > max ||  v2final.y > max || v1final.z > max || v2final.z > max)
+			{
+				// Check for strange values
+				std::cout << "x: " << v1final.x << " y: " << v1final.y << " z: " << v1final.z << std::endl;
+				std::cout << "x: " << v2final.x << " y: " << v2final.y << " z: " << v2final.z << std::endl;
+			}
+			
 			// Set velocities
 			this->setVelocity(v1final.x, v1final.y, v1final.z);
 			other->setVelocity(v2final.x, v2final.y, v2final.z);
+
+			// Get rid of acceleration
+			if(v1final != physicsComponent.velocity)
+			{
+				//this->physicsComponent.acceleration = glm::vec3(0, 0, 0);
+			}
+			if(v2final != other->physicsComponent.velocity)
+			{
+				//other->physicsComponent.acceleration = glm::vec3(0, 0, 0);
+			}
 		}
 	}
 }
@@ -404,8 +410,10 @@ void Polyhedron::translateBackToOrigin()
 {
 	//Translate back the points using the center
 	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-centerX, -centerY, -centerZ));
+
+	// NOTE: this was causing the translation issues. Not sure why.
 	//Then translate back using the total offset/velocity
-	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-offsetX, -offsetY, -offsetZ));
+	//compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-offsetX, -offsetY, -offsetZ));
 }
 void Polyhedron::translateBackToCurrentPosition()
 {
@@ -457,8 +465,9 @@ void Polyhedron::display( void )
 		 radius*sin(theta)*sin(phi),
 		 radius*cos(theta), 
 		 1.0f);
-    vec4  at( 0.0f, 0.0f, 0.0f, 1.0f);
-    vec4    up( 0.0f, 1.0f, 0.0f, 0.0f);
+    //vec4  at( 0.0f, 0.0f, 0.0f, 1.0f);
+    vec4  at( 0.0f, -1.0f, 0.0f, 1.0f);
+	vec4    up( 0.0f, 1.0f, 0.0f, 0.0f);
 
 	mat4 mv = LookAt(eye, at, up);
 	glUniformMatrix4fv( view, 1, GL_TRUE, mv);

@@ -7,6 +7,7 @@ class Octahedron : public Polyhedron
 public:
 	Octahedron(void);
 	Octahedron(GLfloat, GLfloat, GLfloat);
+	Octahedron(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat); // octahedron with position and size
 	Octahedron(const Octahedron&);
 	const Octahedron& operator=(const Octahedron&);
 	~Octahedron(void);
@@ -15,6 +16,6 @@ public:
 	void draw();
 	void drawTriangles(int, int, int);
 private:
-	void initOctahedron(GLfloat, GLfloat, GLfloat);
+	void initOctahedron(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
 };
 #endif
