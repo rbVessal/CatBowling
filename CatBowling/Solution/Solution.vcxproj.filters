@@ -35,14 +35,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\fshader.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vshader.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Angel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -168,5 +160,13 @@
     <ClCompile Include="BoxShape.cpp">
       <Filter>Source Files\Geometry</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\fshader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\vshader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

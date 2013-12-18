@@ -160,11 +160,6 @@ void Polyhedron::setupVBO()
     glBufferSubData( GL_ARRAY_BUFFER, NumVertices * sizeof(glm::vec4), NumVertices * sizeof(color4), colors );
 }
 
-glm::vec3 Polyhedron::getCenter()
-{
-	return glm::vec3(centerX, centerY, centerZ);
-}
-
 // Setters and Getters
 Collider* Polyhedron::getCollider()
 {
@@ -302,16 +297,31 @@ void Polyhedron::testCollision(Polyhedron* other)
 			if(v1.z != physicsComponent.velocity.z)
 				physicsComponent.acceleration.z *= -1;*/
 
-			// If the velocities changed
+			// If the velocities changed upon collision
 			if(v1 != getVelocity() || v2 != other->getVelocity())
 			{
 				// If mass of an object is large, assume it should never move
-		
 				if(physicsComponent.mass > MAX_MASS || other->physicsComponent.mass > MAX_MASS)
 				{
 					// Objects keep their own momentum that the colliders calculated
 					this->setVelocity(v1.x, v1.y, v1.z);
 					other->setVelocity(v2.x, v2.y, v2.z);
+
+					// Check for tunneling
+					if(physicsComponent.mass > MAX_MASS)
+					{
+						if(other->physicsComponent.velocity.length() < 5)
+						{
+							physicsComponent.acceleration *= -1;
+						}
+					}
+					else if(other->physicsComponent.mass > MAX_MASS)
+					{
+						if(physicsComponent.velocity.length() < 5)
+						{
+							physicsComponent.acceleration *= -1;
+						}
+					}
 				}
 				// Else, conserve momentum with an elastic collision
 				else

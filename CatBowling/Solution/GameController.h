@@ -14,7 +14,8 @@
 // Score object represents a bowling frame
 struct score
 {
-	int turnScore;		// the score for this frame
+	int turnScore1;		// the scores for this frame
+	int turnScore2;
 	int totalScore;		// turn score + total up to this point
 };
 
@@ -29,11 +30,13 @@ public:
 	void start();
 	void update();
 	void display();
+	void endGame();
 
 	void checkBallDone();
 	bool checkBallFell();
 
 	// Scoring
+	void processPins();
 	void processScore(int);
 	void printScores();
 
