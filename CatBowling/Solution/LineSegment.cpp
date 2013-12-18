@@ -29,11 +29,6 @@ int LineSegment::calculateCollisionType(Collider* other)
 	}
 }
 
-glm::vec3 collisionResponseVector(Collider* other, glm::vec3 velocity)
-{
-	return glm::vec3(0, 0, 0);
-}
-
 bool LineSegment::checkCollision(Collider* other)
 {
 	if(this != other)
@@ -186,9 +181,6 @@ float LineSegment::checkAABB(AABB* other)
 	// P1 inside box?
 	if(inside)
 	{
-		/*if(returnNormal != NULL)
-		{
-		}*/
 		return 0.0f;
 	}
 

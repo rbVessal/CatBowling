@@ -49,6 +49,7 @@ static GLuint program;
 const GLfloat  dr = 5.0 * DegreesToRadians;
 //----------------------------------------------------------------------------
 
+#ifdef TEST_MODE
 // The "Geometry Wars" screen state for polygon testing
 void initTestState()
 {
@@ -107,6 +108,7 @@ void initTestState()
 	test = new PolyController(polyhedronArray, sizeOfPolyhedronArray);
 	test->init(program);
 }
+#endif
 
 // OpenGL initialization
 void init()
@@ -190,7 +192,7 @@ void init()
 
 	for(int i = 0; i < sizeOfGamePolys; i++)
 	{
-		// TODO: figure out something for the radius
+		// Arbitrarily set "radius" as 1
 		octree->insert(gamePolys[i], gamePolys[i]->getCenter(), 1.0);
 	}
 
@@ -256,10 +258,7 @@ void keyboard( unsigned char key, int x, int y )
 	{
 		// Start
 		case ' ':
-			if(screenState==MENU)
-			{
-				screenState=GAME;
-			}
+			if(screenState==MENU){ screenState=GAME; }
 			break;
 		// Pause
 		case 'p':

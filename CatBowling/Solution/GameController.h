@@ -6,7 +6,7 @@
 
 #define TURN_BEGIN 0	// beginning of turn where user input is collected
 #define ROLLING	1		// ball rolling down the lane
-#define INACTIVE 2		// in an unrelated game-state such as 
+#define INACTIVE 2		// state where user interaction with ball is turned off AND ball is not rolling
 
 #define BALL1 0
 #define BALL2 1
@@ -14,9 +14,10 @@
 // Score object represents a bowling frame
 struct score
 {
-	int turnScore1;		// the scores for this frame
+	// Both scores for this frame and the total game score
+	int turnScore1;
 	int turnScore2;
-	int totalScore;		// turn score + total up to this point
+	int totalScore;
 };
 
 class GameController

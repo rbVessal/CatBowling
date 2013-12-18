@@ -12,6 +12,7 @@
 #define LINE_AABB 2
 #define LINE_LINE 3
 
+// Parent class for all collision objects
 class Collider
 {
 public:
@@ -24,8 +25,5 @@ public:
 	virtual bool checkCollision(Collider*)=0;
 	virtual glm::vec3 collisionResponseVector(Collider*, glm::vec3)=0;
 	virtual int calculateCollisionType(Collider* other)=0;
-
-	// TODO: OBB, point-to-line collisions, handle tunneling
-	// ...
 };
 #endif

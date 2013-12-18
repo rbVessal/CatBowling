@@ -65,6 +65,7 @@ GameController::~GameController(void)
 void GameController::start()
 {
 	gameState = TURN_BEGIN;
+	turnState = BALL1;
 	turnNumber = 0;
 
 	for(int i=0; i<10; i++)

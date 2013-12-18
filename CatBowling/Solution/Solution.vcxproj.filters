@@ -92,14 +92,14 @@
     <ClInclude Include="BezierSurfaceController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LineSegment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Line.h">
       <Filter>Header Files\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="BoxShape.h">
       <Filter>Header Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="LineSegment.h">
+      <Filter>Header Files\Collision Detection</Filter>
     </ClInclude>
     <ClInclude Include="LineSegment.h">
       <Filter>Header Files\Collision Detection</Filter>
@@ -151,14 +151,14 @@
     <ClCompile Include="BezierSurfaceController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LineSegment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Line.cpp">
       <Filter>Source Files\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="BoxShape.cpp">
       <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="LineSegment.cpp">
+      <Filter>Source Files\Collision Detection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -255,19 +255,6 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 	//Update the position and velocity using euler integration
 	eulerIntegrationUpdate();
 
-	// Check for tunneling
-	/*for(int i=0; i<size; i++)
-	{
-		if(polyhedronArray[i] != this)
-		{
-			if( collider->checkCollision(polyhedronArray[i]->getCollider()) )
-			{
-				// Tunneling happened; use swept collision response to fix object
-				//std::cout<< "tunneling happened" << std::endl;
-			}
-		}
-	}*/
-
 	//Update AABB
 	AABB* aabb = dynamic_cast<AABB*>(collider);
 	if(aabb)
@@ -288,14 +275,6 @@ void Polyhedron::testCollision(Polyhedron* other)
 			// Use any collider to get a vector that is reflected over the collision normal
 			glm::vec3 v1 = collider->collisionResponseVector(other->getCollider(), getVelocity());
 			glm::vec3 v2 = other->collider->collisionResponseVector(collider, other->getVelocity());
-
-			// How to handle acceleration after a collision?
-			/*if(v1.x != physicsComponent.velocity.x)
-				physicsComponent.acceleration.x *= -1;
-			if(v1.y != physicsComponent.velocity.y)
-				physicsComponent.acceleration.y *= -1;
-			if(v1.z != physicsComponent.velocity.z)
-				physicsComponent.acceleration.z *= -1;*/
 
 			// If the velocities changed upon collision
 			if(v1 != getVelocity() || v2 != other->getVelocity())
@@ -345,13 +324,14 @@ void Polyhedron::testCollision(Polyhedron* other)
 						v2final = ( 2 * m1 / m1 + m2 ) * u1;
 					}
 
+					/*
 					int max = 3;
 					if(v1final.x > max || v2final.x > max || v1final.y > max ||  v2final.y > max || v1final.z > max || v2final.z > max)
 					{
 						// Check for strange values
-						//std::cout << "x: " << v1final.x << " y: " << v1final.y << " z: " << v1final.z << std::endl;
-						//std::cout << "x: " << v2final.x << " y: " << v2final.y << " z: " << v2final.z << std::endl;
-					}
+						std::cout << "x: " << v1final.x << " y: " << v1final.y << " z: " << v1final.z << std::endl;
+						std::cout << "x: " << v2final.x << " y: " << v2final.y << " z: " << v2final.z << std::endl;
+					}*/
 			
 					// Set velocities
 					this->setVelocity(v1final.x, v1final.y, v1final.z);

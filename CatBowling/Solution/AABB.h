@@ -20,7 +20,6 @@ public:
 	// Functions
 	bool checkAABB(AABB*);
 	glm::vec3 getNormal(AABB*);
-	//glm::vec3 getClosestPoint(glm::vec3);
 	float getSquaredDistancePointToLine(glm::vec3, glm::vec3, glm::vec3);
 	
 	// Setters / Getters
