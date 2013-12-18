@@ -11,8 +11,10 @@
 #include "GameController.h"
 #include "BezierSurfaceController.h"
 #include "Octree.h"
+#include "TextRender.h"
 #include <time.h>
 #include "vld.h"
+#include <string>
 
 #define MENU 0
 #define GAME 1
@@ -39,6 +41,8 @@ PolyController* game;
 
 static GameController* gameController;
 static BezierSurfaceController* bezierSurfaceController;
+
+TextRender* textRender;
 
 Octree* octree;
 
@@ -194,6 +198,8 @@ void init()
 		octree->insert(gamePolys[i], gamePolys[i]->getCenter(), 1.0);
 	}
 
+	textRender = new TextRender(program);
+
     glEnable( GL_DEPTH_TEST );
 }
 
@@ -223,8 +229,11 @@ void display( void )
 	// Render either the Menu polys or the Game polys
 	if(screenState==MENU)
 	{
+		
 		//Render the bezier surface
 		bezierSurfaceController->display();
+		//Render the title of the game
+		textRender->display();
 	}
 	else if(screenState==GAME || screenState==GAME_PAUSE)
 	{
@@ -372,6 +381,7 @@ int main( int argc, char **argv )
 	delete menu;
 	delete gameController;
 	delete bezierSurfaceController;
+	delete textRender;
 	delete octree;
 	
 #ifdef TEST_MODE

@@ -115,6 +115,7 @@ void BezierSurfaceController::display()
 	//curves[1]->createPoints();
 	surfaces[0]->createPoints();
 	trajectoryCurve->display();
+
 	
 #pragma region Curves
 	/*if( curvesDisplay )

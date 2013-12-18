@@ -53,6 +53,8 @@ public:
 	
 	void setPosition(float x, float y, float z){offsetX = x; offsetY = y; offsetZ = z;}
 	void rotate(float, glm::vec3);
+	void scale(glm::vec3);
+	void shear(glm::vec2);
 	
 	void eulerIntegrationUpdate();
 	void move(Polyhedron** polyhedronArray, int size);
@@ -67,6 +69,8 @@ protected:
 	GLfloat halfWidthExtentX, halfWidthExtentY, halfWidthExtentZ;
 	
 	glm::mat4 rotationQuaternionMatrix;
+	glm::mat4 scaleMatrix;
+	glm::mat4 shearMatrix;
 	GLfloat offsetX, offsetY, offsetZ;
 	int index;
 	int NumVertices;
@@ -121,6 +125,8 @@ protected:
 	//Translate back to origin before applying other modeling transformations
 	void translateBackToOrigin();
 	void translateBackToCurrentPosition();
+
+	
 
 	//For clearing out the composite model transformation matrix after it has been applied to the shader
 	void clearCompositeModelTransformationMatrix();

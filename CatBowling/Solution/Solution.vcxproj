@@ -121,6 +121,7 @@ xcopy "$(SolutionDir)$(SolutionName)\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClInclude Include="BezierSurfaceController.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="MathFunctions.h" />
+    <ClInclude Include="TextRender.h" />
     <ClInclude Include="TrajectoryCurve.h" />
     <ClInclude Include="BoxShape.h" />
     <ClInclude Include="CheckError.h" />
@@ -142,6 +143,7 @@ xcopy "$(SolutionDir)$(SolutionName)\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClCompile Include="BezierCurve.cpp" />
     <ClCompile Include="BezierSurface.cpp" />
     <ClCompile Include="BezierSurfaceController.cpp" />
+    <ClCompile Include="TextRender.cpp" />
     <ClCompile Include="TrajectoryCurve.cpp" />
     <ClCompile Include="BoxShape.cpp" />
     <ClCompile Include="Collider.cpp" />

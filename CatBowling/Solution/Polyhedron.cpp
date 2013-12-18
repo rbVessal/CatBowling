@@ -117,6 +117,8 @@ void Polyhedron::initValues()
 	//Initialize composite transformation matrix to indentity matrix
 	compositeModelTransformationMatrix = glm::mat4(1.0f);
 	rotationQuaternionMatrix = glm::mat4(1.0f);
+	scaleMatrix = glm::mat4(1.0f);
+	shearMatrix = glm::mat4(1.0f);
 }
 
 void Polyhedron::init(GLuint program)
@@ -410,15 +412,21 @@ void Polyhedron::translateBackToOrigin()
 {
 	//Translate back the points using the center
 	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-centerX, -centerY, -centerZ));
-
-	// NOTE: this was causing the translation issues. Not sure why.
-	//Then translate back using the total offset/velocity
-	//compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(-offsetX, -offsetY, -offsetZ));
 }
 void Polyhedron::translateBackToCurrentPosition()
 {
 	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(offsetX, offsetY, offsetZ));
 	compositeModelTransformationMatrix = glm::translate(compositeModelTransformationMatrix, glm::vec3(centerX, centerY, centerZ));
+}
+
+void Polyhedron::scale(glm::vec3 scale)
+{
+	scaleMatrix = glm::scale(glm::mat4(1), scale);
+}
+
+void Polyhedron::shear(glm::vec2 shear)
+{
+	shearMatrix = glm::shearX3D(glm::mat4(1), shear.x, shear.y);
 }
 
 void Polyhedron::display( void )
@@ -448,6 +456,8 @@ void Polyhedron::display( void )
 	//Matrix multiplication for OpenGL and GLSL happens in reverse order
 	//So call the model transformations in reverse order to achieve this
 	translateBackToCurrentPosition();
+	compositeModelTransformationMatrix = compositeModelTransformationMatrix * scaleMatrix;
+	compositeModelTransformationMatrix = compositeModelTransformationMatrix * shearMatrix;
 	compositeModelTransformationMatrix = compositeModelTransformationMatrix * rotationQuaternionMatrix;
 	translateBackToOrigin();
 	
