@@ -6,6 +6,8 @@
 #include "boxshape.h"
 #include "LineSegment.h"
 
+#define LINE_VISIBILITY 1
+
 class Line : public BoxShape
 {
 public:

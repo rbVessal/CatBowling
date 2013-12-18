@@ -7,6 +7,7 @@
 Polyhedron::Polyhedron(void)
 {
 	rotationAngle = 0;
+	isVisible = true;
 }
 
 Polyhedron::Polyhedron(const Polyhedron& other)
@@ -181,17 +182,6 @@ void Polyhedron::setVelocityLocal(float x, float y, float z)
 	physicsComponent.velocity = glm::vec3(v.x, v.y, v.z);
 }
 
-/*
-void Polyhedron::draw()
-{
-   
-}
-
-void Polyhedron::drawTriangles(int indice0, int indice1, int indice2, int)
-{
-	
-}*/
-
 //Update velocity and position based on euler integration
 //see: http://physics2d.com/content/euler-integration
 void Polyhedron::eulerIntegrationUpdate()
@@ -254,6 +244,7 @@ void Polyhedron::resetPolyhedron()
 	offsetX = 0;
 	offsetY = 0;
 	offsetZ = 0;
+	isVisible = true;
 }
 
 void Polyhedron::move(Polyhedron** polyhedronArray, int size)
@@ -265,7 +256,7 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 	eulerIntegrationUpdate();
 
 	// Check for tunneling
-	for(int i=0; i<size; i++)
+	/*for(int i=0; i<size; i++)
 	{
 		if(polyhedronArray[i] != this)
 		{
@@ -275,7 +266,7 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 				//std::cout<< "tunneling happened" << std::endl;
 			}
 		}
-	}
+	}*/
 
 	//Update AABB
 	AABB* aabb = dynamic_cast<AABB*>(collider);
@@ -287,92 +278,88 @@ void Polyhedron::move(Polyhedron** polyhedronArray, int size)
 
 void Polyhedron::testCollision(Polyhedron* other)
 {
-	const float MAX_MASS = 50;
-	
-	// Use any collider to get a vector that is reflected over the collision normal
-	glm::vec3 v1 = collider->collisionResponseVector(other->getCollider(), getVelocity());
-	glm::vec3 v2 = other->collider->collisionResponseVector(collider, other->getVelocity());
+	const float MAX_MASS = 50; // set a high mass to consider "unmovable"
+	int type = collider->calculateCollisionType(other->getCollider());	// what type of collision?
 
-	// How to handle acceleration after a collision?
-	/*if(v1.x != physicsComponent.velocity.x)
-		physicsComponent.acceleration.x *= -1;
-	if(v1.y != physicsComponent.velocity.y)
-		physicsComponent.acceleration.y *= -1;
-	if(v1.z != physicsComponent.velocity.z)
-		physicsComponent.acceleration.z *= -1;*/
-
-	// If the velocities changed
-	if(v1 != getVelocity() || v2 != other->getVelocity())
+	if(isVisible && other->isVisible)
 	{
-		// If mass of an object is large, assume it should never move
-		
-		if(physicsComponent.mass > MAX_MASS || other->physicsComponent.mass > MAX_MASS)
+		if(type == AABB_AABB)
 		{
-			// Objects keep their own momentum that the colliders calculated
-			this->setVelocity(v1.x, v1.y, v1.z);
-			other->setVelocity(v2.x, v2.y, v2.z);
+			// Use any collider to get a vector that is reflected over the collision normal
+			glm::vec3 v1 = collider->collisionResponseVector(other->getCollider(), getVelocity());
+			glm::vec3 v2 = other->collider->collisionResponseVector(collider, other->getVelocity());
 
-			// Get rid of acceleration
-			if(v1 != physicsComponent.velocity)
+			// How to handle acceleration after a collision?
+			/*if(v1.x != physicsComponent.velocity.x)
+				physicsComponent.acceleration.x *= -1;
+			if(v1.y != physicsComponent.velocity.y)
+				physicsComponent.acceleration.y *= -1;
+			if(v1.z != physicsComponent.velocity.z)
+				physicsComponent.acceleration.z *= -1;*/
+
+			// If the velocities changed
+			if(v1 != getVelocity() || v2 != other->getVelocity())
 			{
-				//this->physicsComponent.acceleration = glm::vec3(0, 0, 0);
-			}
-			if(v2 != other->physicsComponent.velocity)
-			{
-				//other->physicsComponent.acceleration = glm::vec3(0, 0, 0);
+				// If mass of an object is large, assume it should never move
+		
+				if(physicsComponent.mass > MAX_MASS || other->physicsComponent.mass > MAX_MASS)
+				{
+					// Objects keep their own momentum that the colliders calculated
+					this->setVelocity(v1.x, v1.y, v1.z);
+					other->setVelocity(v2.x, v2.y, v2.z);
+				}
+				// Else, conserve momentum with an elastic collision
+				else
+				{
+					// Initial values
+					glm::vec3 u1 = getVelocity();
+					glm::vec3 u2 = other->getVelocity();
+					float m1 = physicsComponent.mass;
+					float m2 = other->physicsComponent.mass;
+
+					// v1 = ( m1-m2 / m1+m2 ) * u1 + ( 2 * m2 / m1 + m2 ) * u2
+					glm::vec3 v1final = ( m1-m2 / m1+m2 ) * u1 + ( 2 * m2 / m1 + m2 ) * u2;
+
+					// v2 = ( m2-m1 / m1+m2 ) * u2 + ( 2 * m1 / m1 + m2 ) * u1
+					glm::vec3 v2final = ( m2-m1 / m1+m2 ) * u2 + ( 2 * m1 / m1 + m2 ) * u1;
+
+					// Fix stupid math
+					if(m1 == m2)
+					{
+						v1final = ( 2 * m2 / m1 + m2 ) * u2;
+						v2final = ( 2 * m1 / m1 + m2 ) * u1;
+					}
+
+					int max = 3;
+					if(v1final.x > max || v2final.x > max || v1final.y > max ||  v2final.y > max || v1final.z > max || v2final.z > max)
+					{
+						// Check for strange values
+						//std::cout << "x: " << v1final.x << " y: " << v1final.y << " z: " << v1final.z << std::endl;
+						//std::cout << "x: " << v2final.x << " y: " << v2final.y << " z: " << v2final.z << std::endl;
+					}
+			
+					// Set velocities
+					this->setVelocity(v1final.x, v1final.y, v1final.z);
+					other->setVelocity(v2final.x, v2final.y, v2final.z);
+				}
 			}
 		}
-		// Else, conserve momentum with an elastic collision
-		else
+		else if(type == AABB_LINE)
 		{
-			// Initial values
-			glm::vec3 u1 = getVelocity();
-			glm::vec3 u2 = other->getVelocity();
-			float m1 = physicsComponent.mass;
-			float m2 = other->physicsComponent.mass;
-
-			// v1 = ( m1-m2 / m1+m2 ) * u1 + ( 2 * m2 / m1 + m2 ) * u2
-			glm::vec3 v1final = ( m1-m2 / m1+m2 ) * u1 + ( 2 * m2 / m1 + m2 ) * u2;
-
-			// v2 = ( m2-m1 / m1+m2 ) * u2 + ( 2 * m1 / m1 + m2 ) * u1
-			glm::vec3 v2final = ( m2-m1 / m1+m2 ) * u2 + ( 2 * m1 / m1 + m2 ) * u1;
-
-			// Fix stupid math
-			if(m1 == m2)
+			if(collider->checkCollision(other->getCollider()))
 			{
-				v1final = ( 2 * m2 / m1 + m2 ) * u2;
-				v2final = ( 2 * m1 / m1 + m2 ) * u1;
+				this->setVisiblity(false);
 			}
-
-			int max = 3;
-			if(v1final.x > max || v2final.x > max || v1final.y > max ||  v2final.y > max || v1final.z > max || v2final.z > max)
+		}
+		else if(type == LINE_AABB)
+		{
+			if(collider->checkCollision(other->getCollider()))
 			{
-				// Check for strange values
-				std::cout << "x: " << v1final.x << " y: " << v1final.y << " z: " << v1final.z << std::endl;
-				std::cout << "x: " << v2final.x << " y: " << v2final.y << " z: " << v2final.z << std::endl;
-			}
-			
-			// Set velocities
-			this->setVelocity(v1final.x, v1final.y, v1final.z);
-			other->setVelocity(v2final.x, v2final.y, v2final.z);
-
-			// Get rid of acceleration
-			if(v1final != physicsComponent.velocity)
-			{
-				//this->physicsComponent.acceleration = glm::vec3(0, 0, 0);
-			}
-			if(v2final != other->physicsComponent.velocity)
-			{
-				//other->physicsComponent.acceleration = glm::vec3(0, 0, 0);
+				other->setVisiblity(false);
 			}
 		}
 	}
 }
-
-/*void Polyhedron::changeColors()
-{
-	
-}*/
 
 void Polyhedron::animateColorsOfFaces()
 {
@@ -418,59 +405,62 @@ void Polyhedron::translateBackToCurrentPosition()
 
 void Polyhedron::display( void )
 {
-	//Change the colors of the polyhedron faces
-	animateColorsOfFaces();
-	glBindBuffer( GL_ARRAY_BUFFER, vbo );
-	glBufferSubData( GL_ARRAY_BUFFER, NumVertices * sizeof(glm::vec4), NumVertices * sizeof(glm::vec4), colors );
+ 	if(isVisible)
+	{
+		//Change the colors of the polyhedron faces
+		animateColorsOfFaces();
+		glBindBuffer( GL_ARRAY_BUFFER, vbo );
+		glBufferSubData( GL_ARRAY_BUFFER, NumVertices * sizeof(glm::vec4), NumVertices * sizeof(glm::vec4), colors );
 
-	// Bind the vao and vbo for multiple objects on screen
-	//see:  http://t-machine.org/index.php/2013/10/18/ios-open-gl-es-2-multiple-objects-at-once/
+		// Bind the vao and vbo for multiple objects on screen
+		//see:  http://t-machine.org/index.php/2013/10/18/ios-open-gl-es-2-multiple-objects-at-once/
 	
-	glBindVertexArray( vao );
+		glBindVertexArray( vao );
 
-	//Define the model matrix using transformations
-	//Transformations - Scaling, Rotating, Translation, Skewing
-	//see: http://stackoverflow.com/questions/12838375/model-matrix-in-glm
-	//Clear the composite transformation matrix
-	clearCompositeModelTransformationMatrix();
+		//Define the model matrix using transformations
+		//Transformations - Scaling, Rotating, Translation, Skewing
+		//see: http://stackoverflow.com/questions/12838375/model-matrix-in-glm
+		//Clear the composite transformation matrix
+		clearCompositeModelTransformationMatrix();
 	
-	//Scaling example
-	//compositeModelTransformationMatrix = glm::scale(compositeModelTransformationMatrix, glm::vec3(0.5, 0.5, 1.0));
+		//Scaling example
+		//compositeModelTransformationMatrix = glm::scale(compositeModelTransformationMatrix, glm::vec3(0.5, 0.5, 1.0));
 	
-	//Shearing example
-	//compositeModelTransformationMatrix = glm::shearX3D(compositeModelTransformationMatrix, 1.0f, 1.0f);
+		//Shearing example
+		//compositeModelTransformationMatrix = glm::shearX3D(compositeModelTransformationMatrix, 1.0f, 1.0f);
 	
-	//Matrix multiplication for OpenGL and GLSL happens in reverse order
-	//So call the model transformations in reverse order to achieve this
-	translateBackToCurrentPosition();
-	compositeModelTransformationMatrix = compositeModelTransformationMatrix * rotationQuaternionMatrix;
-	translateBackToOrigin();
+		//Matrix multiplication for OpenGL and GLSL happens in reverse order
+		//So call the model transformations in reverse order to achieve this
+		translateBackToCurrentPosition();
+		compositeModelTransformationMatrix = compositeModelTransformationMatrix * rotationQuaternionMatrix;
+		translateBackToOrigin();
 	
-	//Rotation using Euler angles
-	/*translateBackToCurrentPosition();
-	compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
-	translateBackToOrigin();*/
+		//Rotation using Euler angles
+		/*translateBackToCurrentPosition();
+		compositeModelTransformationMatrix = glm::rotate(compositeModelTransformationMatrix, rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+		translateBackToOrigin();*/
 
-	//GLM matrices are already transposed, so we can pass in GL_FALSE
-	glUniformMatrix4fv( transformationMatrix, 1, GL_FALSE, glm::value_ptr(compositeModelTransformationMatrix));
+		//GLM matrices are already transposed, so we can pass in GL_FALSE
+		glUniformMatrix4fv( transformationMatrix, 1, GL_FALSE, glm::value_ptr(compositeModelTransformationMatrix));
 	
 
-	//Define the view matrix as the eye coordinates
-	vec4  eye( radius*sin(theta)*cos(phi),
-		 radius*sin(theta)*sin(phi),
-		 radius*cos(theta), 
-		 1.0f);
-    //vec4  at( 0.0f, 0.0f, 0.0f, 1.0f);
-    vec4  at( 0.0f, -1.0f, 0.0f, 1.0f);
-	vec4    up( 0.0f, 1.0f, 0.0f, 0.0f);
+		//Define the view matrix as the eye coordinates
+		vec4  eye( radius*sin(theta)*cos(phi),
+			 radius*sin(theta)*sin(phi),
+			 radius*cos(theta), 
+			 1.0f);
+		//vec4  at( 0.0f, 0.0f, 0.0f, 1.0f);
+		vec4  at( 0.0f, -1.0f, 0.0f, 1.0f);
+		vec4    up( 0.0f, 1.0f, 0.0f, 0.0f);
 
-	mat4 mv = LookAt(eye, at, up);
-	glUniformMatrix4fv( view, 1, GL_TRUE, mv);
+		mat4 mv = LookAt(eye, at, up);
+		glUniformMatrix4fv( view, 1, GL_TRUE, mv);
 
-	//Define the prespective projection matrix
-    mat4  perspectiveProjection = Frustum( left, right, bottom, top, zNear, zFar );
-	glUniformMatrix4fv( projection, 1, GL_TRUE, perspectiveProjection);	
+		//Define the prespective projection matrix
+		mat4  perspectiveProjection = Frustum( left, right, bottom, top, zNear, zFar );
+		glUniformMatrix4fv( projection, 1, GL_TRUE, perspectiveProjection);	
 
-	//Draw those beautiful polyhedrons using GL_TRIANGLES
-	glDrawArrays( GL_TRIANGLES, 0, NumVertices );
+		//Draw those beautiful polyhedrons using GL_TRIANGLES
+		glDrawArrays( GL_TRIANGLES, 0, NumVertices );
+	}
 }

@@ -4,6 +4,7 @@
 GameController::GameController(void)
 {
 	gameState = INACTIVE;
+	turnState = BALL1;
 	gameScore = 0;
 	ball =  NULL;
 
@@ -16,6 +17,7 @@ GameController::GameController(void)
 GameController::GameController(Polyhedron* ballPoly, Polyhedron** pinArray)
 {
 	gameState = INACTIVE;
+	turnState = BALL1;
 	gameScore = 0;
 	ball =  ballPoly;
 
@@ -35,6 +37,18 @@ GameController::GameController(Polyhedron* ballPoly, Polyhedron** pinArray)
 			pins[i] = NULL;
 		}
 	}
+
+	// Print welcome message
+	std::cout << "\n-----------------------------" << std::endl;
+	std::cout << "-------- CAT BOWLING --------\n" << std::endl;
+	std::cout << "Controls:" << std::endl;
+	std::cout << "space - start game (from menu)" << std::endl;
+	std::cout << "r - reset game" << std::endl;
+	std::cout << "p - pause game\n" << std::endl;
+	std::cout << "j/k - move ball left/right" << std::endl;
+	std::cout << "d/f - rotate ball left/right" << std::endl; 
+	std::cout << "b - bowl" << std::endl;
+	std::cout << "-----------------------------" << std::endl;
 }
 
 GameController::~GameController(void)
@@ -44,6 +58,13 @@ GameController::~GameController(void)
 void GameController::start()
 {
 	gameState = TURN_BEGIN;
+	turnNumber = 0;
+
+	for(int i=0; i<10; i++)
+	{
+		frames[i].totalScore = 0;
+		frames[i].turnScore = 0;
+	}
 }
 
 void GameController::update()
@@ -56,9 +77,99 @@ void GameController::update()
 		// Rolling
 		ball->rotate(-5, glm::vec3(1, 0, 0));
 
-		// Point to line collision to test if ball has reached the end yet
-
+		// Do next turn?
+		checkBallDone();
 	}
+
+	// Visiblity detection for incorrect ball invisibility
+	if(gameState != ROLLING && ball->getVisiblity() == false)
+	{
+		ball->setVisiblity(true);
+	}
+
+	if(turnNumber == 10)
+	{
+		// TODO: game end
+		// ...
+
+		// Reset everything
+		ball->resetPolyhedron();
+		for(int i=0; i<10; i++)
+		{
+			pins[i]->resetPolyhedron();
+		}
+		start();
+	}
+}
+
+void GameController::checkBallDone()
+{
+	// Visiblity detection if ball has reached end
+	if(checkBallFell() || ball->getVisiblity() == false)
+	{
+		// Restart ball, update score, display score
+		gameState = TURN_BEGIN;
+		processScore(1);
+		printScores();
+
+		// Next ball in turn
+		if(turnState == BALL1)
+		{
+			turnState = BALL2;
+
+			// reset ball but not pins
+			ball->resetPolyhedron();
+
+		}
+		// Next turn
+		else if(turnState == BALL2)
+		{
+			turnState = BALL1;
+			turnNumber++;
+
+			// reset ball and pins
+			ball->resetPolyhedron();
+			for(int i=0; i<10; i++)
+			{
+				pins[i]->resetPolyhedron();
+			}
+		}
+	}
+}
+
+bool GameController::checkBallFell()
+{
+	// If the ball fell far
+	if(ball->getPosition().y < -10 || ball->getPosition().z < -8)
+	{
+		return true;
+	}
+	return false;
+}
+
+void GameController::processScore(int n)
+{
+	frames[turnNumber].turnScore += n;
+
+	// Update total score
+	if(turnState == BALL2)
+	{
+		frames[turnNumber].totalScore += frames[turnNumber].turnScore;
+
+		// Chain along the total score to the next frame
+		if(turnNumber < 9)
+		{
+			frames[turnNumber+1].totalScore = frames[turnNumber].totalScore;
+		}
+	}
+}
+
+void GameController::printScores()
+{
+	std::cout << "Frame " << turnNumber+1 << std::endl;
+	std::cout << "Turn Score: " << frames[turnNumber].turnScore << std::endl;
+	std::cout << "Total Score: " << frames[turnNumber].totalScore << std::endl;
+	std::cout << "-----------------------------" << std::endl;
 }
 
 void GameController::processInput(unsigned char key)
@@ -91,6 +202,6 @@ void GameController::adjustStrafing(float degree)
 
 void GameController::launchBall()
 {
-	ball->setVelocityLocal(0, 0, -0.05);
+	ball->setVelocityLocal(0, 0, -0.075);
 	gameState = ROLLING;
 }

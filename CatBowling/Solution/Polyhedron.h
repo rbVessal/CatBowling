@@ -43,6 +43,9 @@ public:
 	Collider* getCollider();
 	glm::vec3 getVelocity();
 	glm::vec3 getCenter(){ return glm::vec3(centerX, centerY, centerZ); }
+	glm::vec3 getPosition(){ return glm::vec3(centerX + offsetX, centerY + offsetY, centerZ + offsetZ); }
+	void setVisiblity(bool visible){ isVisible = visible; }
+	bool getVisiblity(){ return isVisible; }
 
 	// Kinematics
 	void setVelocity(float x, float y, float z);		// change velocity with world coordinate parameters
@@ -63,6 +66,8 @@ protected:
 	void doCopy(const Polyhedron&); // used for inherited copy constructors
 	GLfloat centerX, centerY, centerZ;
 	GLfloat halfWidthExtentX, halfWidthExtentY, halfWidthExtentZ;
+
+	bool isVisible;
 	
 	glm::mat4 rotationQuaternionMatrix;
 	GLfloat offsetX, offsetY, offsetZ;

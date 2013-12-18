@@ -138,7 +138,7 @@ void init()
 	// Front row (1)
 	gamePolys[11] = new Tetrahedron(0.0, pinHeight, -1.5);
 	// Back wall
-	gamePolys[12] = new Line(glm::vec3(5, pinHeight, -5), glm::vec3(-5, pinHeight, -5));
+	gamePolys[12] = new Line(glm::vec3(2.75, pinHeight, -5), glm::vec3(-2.75, pinHeight, -5));
 
 	// Set the mass of the pins
 	for(int i=2; i<sizeOfGamePolys; i++)
@@ -255,13 +255,6 @@ void keyboard( unsigned char key, int x, int y )
 			//exit( EXIT_SUCCESS ); // causes memory leaks
 			glutLeaveMainLoop(); // exit without memory leaks
 			break;
-
-		//Move the 1st cube in the polyhedron array with these keyboard controls
-		/*case 'a': polyhedronArray[0]->setVelocity(-speed, 0.0, 0.0); break;
-		case 'w': polyhedronArray[0]->setVelocity(0.0, speed, 0.0); break;
-		case 'd': polyhedronArray[0]->setVelocity(speed, 0.0, 0.0); break;
-		case 's': polyhedronArray[0]->setVelocity(0.0, -speed, 0.0); break;
-		*/
     }
 
     glutPostRedisplay();
@@ -311,15 +304,6 @@ void idle()
 			Polyhedron* polyhedron = polyhedronArray[i];
 			polyhedron->move(polyhedronArray, sizeOfPolyhedronArray);
 		}
-
-		// Are we still using these?
-		/*
-		Polyhedron** otherArray = &polyhedronArray[0];
-		polyhedronArray[2]->move(otherArray, 1);
-
-		polyhedronArray[0]->move(polyhedronArray, sizeOfPolyhedronArray);
-		polyhedronArray[1]->move(polyhedronArray, sizeOfPolyhedronArray);
-		*/
 	}
 
 	glutPostRedisplay();
