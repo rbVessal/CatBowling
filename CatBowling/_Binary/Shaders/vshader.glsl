@@ -14,6 +14,7 @@ uniform mat4 transformationMatrix;//Model transformation
 
 void main() 
 {
+	gl_PointSize = 10;
     gl_Position =  projection * viewMatrix * transformationMatrix * vPosition;
 	gl_Position /= vPosition.w;
 	fColor = vColor;

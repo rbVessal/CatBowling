@@ -2,12 +2,14 @@
 // Final Project - Cat Bowling
 // Rebecca Vessal and Jennifer Stanton
 
+#include "TrajectoryCurve.h"
 #include "Line.h"
 #include "Cube.h"
 #include "Tetrahedron.h"
 #include "Octahedron.h"
 #include "PolyController.h"
 #include "GameController.h"
+#include "BezierSurfaceController.h"
 #include "Octree.h"
 #include <time.h>
 #include "vld.h"
@@ -36,6 +38,7 @@ PolyController* menu;
 PolyController* game;
 
 static GameController* gameController;
+static BezierSurfaceController* bezierSurfaceController;
 
 Octree* octree;
 
@@ -121,6 +124,7 @@ void init()
 	// Game
 	sizeOfGamePolys = 13;
 	gamePolys = new Polyhedron*[sizeOfGamePolys];
+	
 	gamePolys[0] = new Cube(0.0, -2.75, -3.25, 2.0, 0.1, 8.0, false); // bowling lane
 	gamePolys[1] = new Octahedron(0.0, -1.25, 1.25, 0.75, 0.75, 0.75); // the "ball" (a cube for now)
 	// Back row of pins (4)
@@ -140,6 +144,15 @@ void init()
 	// Back wall
 	gamePolys[12] = new Line(glm::vec3(2.75, pinHeight, -5), glm::vec3(-2.75, pinHeight, -5));
 
+	//Create the trajectory curve for the game controller
+	//beginning point - ball's center point
+	//center point - mid point between ball and 1st pin (most front)
+	//end point - pin's center point
+	TrajectoryCurve* trajectoryCurve = new TrajectoryCurve(glm::vec3(gamePolys[1]->getCenter().x, gamePolys[1]->getCenter().y, gamePolys[1]->getCenter().z), 
+		glm::vec3(gamePolys[1]->getCenter().x - gamePolys[2]->getCenter().x, gamePolys[1]->getCenter().y - gamePolys[2]->getCenter().y, gamePolys[1]->getCenter().z - gamePolys[2]->getCenter().z), 
+		glm::vec3(gamePolys[2]->getCenter().x, gamePolys[2]->getCenter().y, gamePolys[2]->getCenter().z));
+	trajectoryCurve->init(program);
+	
 	// Set the mass of the pins
 	for(int i=2; i<sizeOfGamePolys; i++)
 	{
@@ -165,8 +178,11 @@ void init()
 	menu->init(program);
 
 	// GameController
-	gameController = new GameController(gamePolys[1], &(gamePolys[2]) );
+	gameController = new GameController(gamePolys[1], &(gamePolys[2]), trajectoryCurve);
+
 	gameController->start();
+
+	bezierSurfaceController = new BezierSurfaceController(trajectoryCurve, program);
 
 	// Octree
 	octree = new Octree();
@@ -207,11 +223,13 @@ void display( void )
 	// Render either the Menu polys or the Game polys
 	if(screenState==MENU)
 	{
-		menu->display();
+		//Render the bezier surface
+		bezierSurfaceController->display();
 	}
 	else if(screenState==GAME || screenState==GAME_PAUSE)
 	{
 		game->display();
+		
 	}
 	else if(screenState==TESTSTATE)
 	{
@@ -238,7 +256,10 @@ void keyboard( unsigned char key, int x, int y )
 	{
 		// Start
 		case ' ':
-			if(screenState==MENU){screenState=GAME;}
+			if(screenState==MENU)
+			{
+				screenState=GAME;
+			}
 			break;
 		// Pause
 		case 'p':
@@ -284,13 +305,6 @@ void idle()
 		{
 			Polyhedron* polyhedron = gamePolys[i];
 			polyhedron->move(gamePolys, sizeOfGamePolys);
-		}
-	}
-	else if(screenState == MENU)
-	{
-		for(int i = 0; i < sizeOfMenuPolys; i++)
-		{
-			menuPolys[i]->move(menuPolys, sizeOfMenuPolys);
 		}
 	}
 	else if(screenState == TESTSTATE)
@@ -341,6 +355,7 @@ int main( int argc, char **argv )
 	delete game;
 	delete menu;
 	delete gameController;
+	delete bezierSurfaceController;
 	delete octree;
 	
 #ifdef TEST_MODE

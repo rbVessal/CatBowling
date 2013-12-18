@@ -60,7 +60,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\x86\include\</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
     </ClCompile>
@@ -87,6 +87,7 @@ xcopy "$(SolutionDir)$(SolutionName)\Shaders" "$(SolutionDir)_Binary\Shaders" /y
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\x86\include\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -115,6 +116,12 @@ xcopy "$(SolutionDir)$(SolutionName)\Shaders" "$(SolutionDir)_Binary\Shaders" /y
   <ItemGroup>
     <ClInclude Include="AABB.h" />
     <ClInclude Include="Angel.h" />
+    <ClInclude Include="BezierCurve.h" />
+    <ClInclude Include="BezierSurface.h" />
+    <ClInclude Include="BezierSurfaceController.h" />
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="MathFunctions.h" />
+    <ClInclude Include="TrajectoryCurve.h" />
     <ClInclude Include="BoxShape.h" />
     <ClInclude Include="CheckError.h" />
     <ClInclude Include="Collider.h" />
@@ -132,6 +139,10 @@ xcopy "$(SolutionDir)$(SolutionName)\Shaders" "$(SolutionDir)_Binary\Shaders" /y
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="BezierCurve.cpp" />
+    <ClCompile Include="BezierSurface.cpp" />
+    <ClCompile Include="BezierSurfaceController.cpp" />
+    <ClCompile Include="TrajectoryCurve.cpp" />
     <ClCompile Include="BoxShape.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Cube.cpp" />

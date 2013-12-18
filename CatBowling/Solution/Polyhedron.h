@@ -61,6 +61,8 @@ public:
 	void move(Polyhedron** polyhedronArray, int size);
 	void testCollision(Polyhedron*);
 	void resetPolyhedron();
+	
+	
 
 protected:
 	void doCopy(const Polyhedron&); // used for inherited copy constructors
@@ -91,7 +93,7 @@ protected:
 	glm::vec4* points;
 	color4* colors;
 
-	// Vertices of a unit cube centered at origin, sides aligned with axes
+	// Vertices of the polyhedron
 	glm::vec4* vertices;
 
 	// RGBA colors
@@ -110,6 +112,7 @@ protected:
 
 	//Composite Model Transformation Matrix
 	glm::mat4 compositeModelTransformationMatrix;
+	
 	
 	virtual void drawTriangles(int indice0, int indice1, int indice2, int){ }
 	virtual void draw(){ }
