@@ -97,6 +97,11 @@ glm::vec3 AABB::collisionResponseVector(Collider* other, glm::vec3 velocity)
 		// If collision, calculate a new velocity
 		if(checkAABB(otherAABB))
 		{
+			//Play sound when collision happens
+			//see: http://stackoverflow.com/questions/1565439/how-to-playsound-in-c-using-windows-api
+			//see: http://msdn.microsoft.com/en-us/library/windows/desktop/dd743680(v=vs.85).aspx
+			//Note: you have to place sound file where .exe file is
+			PlaySound(TEXT("bounce.wav"), NULL, SND_ASYNC);
 			// Get the normal (axis)
 			glm::vec3 normal = getNormal(otherAABB);
 			velocity = glm::reflect(velocity, normal);

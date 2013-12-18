@@ -3,6 +3,9 @@
 
 #include "Polyhedron.h"
 #include "TrajectoryCurve.h"
+#include <Windows.h>
+#include <MMSystem.h>
+
 
 #define TURN_BEGIN 0	// beginning of turn where user input is collected
 #define ROLLING	1		// ball rolling down the lane
@@ -49,6 +52,8 @@ public:
 	TrajectoryCurve* trajectoryCurve;
 
 private:
+
+	bool isSoundLooping;
 	bool renderTrajectoryCurve;
 	Polyhedron* ball;
 	Polyhedron* pins[10];

@@ -4,6 +4,7 @@
 
 GameController::GameController(void)
 {
+	isSoundLooping = false;
 	gameState = INACTIVE;
 	turnState = BALL1;
 	gameScore = 0;
@@ -19,6 +20,7 @@ GameController::GameController(void)
 
 GameController::GameController(Polyhedron* ballPoly, Polyhedron** pinArray, TrajectoryCurve* trajectoryCurve)
 {
+	isSoundLooping = false;
 	this->trajectoryCurve = trajectoryCurve;
 	gameState = INACTIVE;
 	turnState = BALL1;
@@ -64,6 +66,14 @@ GameController::~GameController(void)
 
 void GameController::start()
 {
+	if(!isSoundLooping)
+	{
+		HINSTANCE hinst;
+		//Play this funky sound loop
+		//see: http://msdn.microsoft.com/en-us/library/windows/desktop/dd743680(v=vs.85).aspx
+		PlaySound(TEXT("nyan.wav"), NULL, SND_LOOP | SND_ASYNC );
+		isSoundLooping = true;
+	}
 	gameState = TURN_BEGIN;
 	turnState = BALL1;
 	turnNumber = 0;
@@ -88,6 +98,13 @@ void GameController::display()
 
 void GameController::update()
 {
+	//Stop the sound loop from the menu
+	//and play the start game sound
+	if(isSoundLooping)
+	{
+		PlaySound(TEXT("start.wav"), NULL, SND_ASYNC );
+		isSoundLooping = false;
+	}
 	if(gameState == ROLLING)
 	{
 		// Gravity
