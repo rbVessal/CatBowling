@@ -7,6 +7,12 @@
 //see: http://www.g-truc.net/project-0016.html
 #include "glm\glm.hpp" //for vectors and matrices
 
+#define AABB_AABB 0
+#define AABB_LINE 1
+#define LINE_AABB 2
+#define LINE_LINE 3
+
+// Parent class for all collision objects
 class Collider
 {
 public:
@@ -18,10 +24,6 @@ public:
 	// Pure-virtual Functions
 	virtual bool checkCollision(Collider*)=0;
 	virtual glm::vec3 collisionResponseVector(Collider*, glm::vec3)=0;
-	virtual glm::vec3 getClosestPointToLine(glm::vec3, glm::vec3)=0;
-	virtual float getDistanceToLine(glm::vec3, glm::vec3)=0;
-
-	// TODO: OBB, point-to-line collisions, handle tunneling
-	// ...
+	virtual int calculateCollisionType(Collider* other)=0;
 };
 #endif

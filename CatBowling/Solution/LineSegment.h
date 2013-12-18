@@ -1,7 +1,7 @@
 #ifndef LINE_COLLIDER
 #define LINE_COLLIDER
 
-#include "collider.h"
+#include "aabb.h"
 class LineSegment :	public Collider
 {
 public:
@@ -11,11 +11,13 @@ public:
 
 	// Inherited functions
 	bool checkCollision(Collider* other);
+	int calculateCollisionType(Collider* other);
 
 	// empty inherited functions...
 	glm::vec3 collisionResponseVector(Collider*, glm::vec3) { return glm::vec3(0, 0, 0); }
-	glm::vec3 getClosestPointToLine(glm::vec3, glm::vec3) { return glm::vec3(0, 0, 0); }
-	float getDistanceToLine(glm::vec3, glm::vec3) { return -1; }
+
+	// other functions
+	float checkAABB(AABB*);
 
 private:
 	glm::vec3 endPoint1;

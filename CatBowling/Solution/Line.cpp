@@ -3,7 +3,7 @@
 
 Line::Line(void)
 {
-	isWall = false;
+	isWall = !LINE_VISIBILITY;
 	initBoxShape(0, 0, 0, 0, 0, 0);
 	collider = new LineSegment(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0));
 }
@@ -26,7 +26,7 @@ const Line& Line::operator=(const Line& other)
 
 Line::Line(glm::vec3 p1, glm::vec3 p2)
 {
-	isWall = false;
+	isWall = !LINE_VISIBILITY;
 
 	// Midpoint formula for center
 	GLfloat x = (p1.x + p2.x) * 0.5;

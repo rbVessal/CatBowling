@@ -5,7 +5,6 @@ Tetrahedron::Tetrahedron(void)
 	initTetrahedron(0, 0, 0);
 }
 
-
 void Tetrahedron::initTetrahedron(GLfloat x, GLfloat y, GLfloat z)
 {
 	this->centerX = x;
